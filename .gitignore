@@ -6,3 +6,7 @@
 /build
 /captures
 .externalNativeBuild
+gradle/
+gradlew
+gradlew.bat
+/app/google-services.json
