@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -16,14 +16,21 @@
         <item name="android:textAppearance">@style/SimpleText</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+    <style name="AppTheme.NavigationView">
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:textAppearance">@style/SimpleText</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:textAppearance">@style/SimpleText</item>
+        <item name="android:textColorPrimary">@color/lightBrown</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textAppearance">@style/SimpleText</item>
+        <item name="android:textColorPrimary">@color/lightBrown</item>
     </style>
 
     <style name="SimpleText" parent="@style/TextAppearance.AppCompat">
