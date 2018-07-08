@@ -6,4 +6,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="timeline_empty">Tweets are coming...</string>
+    <string name="no_network">There is no network connection</string>
+
 </resources>
