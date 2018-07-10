@@ -22,20 +22,12 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             Intent i = new Intent(Base.this, StoriesActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_twitter) {
             Intent i = new Intent(Base.this, TimelineActivity.class);
             startActivity(i);
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -66,9 +58,9 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        if (id == R.id.action_about) {
+            Intent i = new Intent(Base.this, AboutActivity.class);
+            startActivity(i);        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -8,6 +8,11 @@
     tools:context=".StoriesActivity"
     tools:showIn="@layout/app_bar_stories">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/shadow" />
+
     <TextView
         style="@style/SimpleText"
         android:layout_width="wrap_content"

@@ -1,12 +1,35 @@
 <resources>
     <string name="app_name">My Stories</string>
+    <!-- Email -->
+    <string name="email">Send email to Developer</string>
+    <string name="rate">Rate the application</string>
+    <string name="about">About</string>
+    <string name="about_text"><![CDATA[ <h2>My Stories</h2>\n
+    <h2>Udacity</h2>\n
+    <h2>Capstone Project, Stage 2</h2>\n
+    <h2>Project Overview</h2>\n
+    <h3>Description</h3>\n
+    Tired to read news? Looking for inspired stories and things to laugh? Get in “My stories” application and your free time will change forever! Read interesting, funny stories every day and get inspired from famous quotes.\n
+    <h3>Intended User</h3>\n
+    The app is addressed to the average person who wants to read or see something funny and get undistressed from every day’s pressure.\n
+    <h3>Features</h3>\n
+    A user will be capable to read stories, view pictures and see video. The content will be updated every day from a Firebase database.\n]]></string>
+    <string name="about_mail">About My Stories application</string>
+    <string name="main_me">I am sending you this message through My Stories app and I want…</string>
+    <string name="send">Sending email</string>
+    <string name="no_mail_programs">No mail programs installed</string>
+    <!-- Play store -->
+    <string name="failed2">I could not communicate with Google Play! Check your internet connection.</string>
+    <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="timeline_empty">Tweets are coming...</string>
+    <!-- Twitter -->
+    <string name="twitter">Tweets to see</string>
+    <string name="timeline_empty">Tweets are coming…</string>
+    <!-- Network -->
     <string name="no_network">There is no network connection</string>
 
 </resources>
