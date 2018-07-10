@@ -22,8 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".AndroidNetworkUtility"/>
+        <activity android:name=".AndroidNetworkUtility" />
         <activity
             android:name=".Base"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -32,6 +31,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".twitter.TwitterCoreMainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service

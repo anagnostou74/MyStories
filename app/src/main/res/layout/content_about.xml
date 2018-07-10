@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AboutActivity"
+    tools:layout_editor_absoluteY="25dp">
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:layout_margin="@dimen/card_margin"
+        android:background="@color/lightBrown"
+        app:cardCornerRadius="@dimen/card_corner"
+        app:cardElevation="@dimen/card_elevation"
+        app:layout_constraintBottom_toTopOf="@+id/btnVathm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin">
+
+            <TextView
+                android:id="@+id/about"
+                style="@style/SimpleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:drawableBottom="@drawable/ic_menu_twitter"
+                android:drawableTop="@drawable/ic_menu_home"
+                android:linksClickable="true"
+                android:text="@string/about_text" />
+        </ScrollView>
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/btnVathm"
+        style="@style/Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/button_margin"
+        android:drawableTop="@drawable/favorite"
+        android:gravity="center"
+        android:text="@string/rate"
+        android:textColor="@color/lightBrown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnMail"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+    <Button
+        android:id="@+id/btnMail"
+        style="@style/Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/button_margin"
+        android:drawableTop="@drawable/email"
+        android:gravity="center"
+        android:text="@string/email"
+        android:textColor="@color/lightBrown"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnVathm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnVathm" />
+
+</android.support.constraint.ConstraintLayout>
