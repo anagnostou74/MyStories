@@ -9,6 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import butterknife.BindView;
+import gr.mobap.mystories.activities.AboutActivity;
+import gr.mobap.mystories.activities.LoginActivity;
+import gr.mobap.mystories.activities.StoriesActivity;
 import gr.mobap.mystories.twitter.TimelineActivity;
 
 
@@ -23,7 +26,7 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            Intent i = new Intent(Base.this, StoriesActivity.class);
+            Intent i = new Intent(Base.this, LoginActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_twitter) {
             Intent i = new Intent(Base.this, TimelineActivity.class);
