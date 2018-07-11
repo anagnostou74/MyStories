@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".StoriesActivity"
+            android:name=".activities.StoriesActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AndroidNetworkUtility" />
+        <activity android:name=".utilities.AndroidNetworkUtility" />
         <activity
             android:name=".Base"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -33,11 +33,12 @@
             android:name=".twitter.TwitterCoreMainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AboutActivity"
+            android:name=".activities.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.LoginActivity" />
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".utilities.MyFirebaseMessagingService"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

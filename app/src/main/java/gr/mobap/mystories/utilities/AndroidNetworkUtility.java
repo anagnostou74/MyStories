@@ -1,4 +1,4 @@
-package gr.mobap.mystories;
+package gr.mobap.mystories.utilities;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

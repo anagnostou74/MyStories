@@ -28,10 +28,10 @@ import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import gr.mobap.mystories.AndroidNetworkUtility;
+import gr.mobap.mystories.utilities.AndroidNetworkUtility;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
-import gr.mobap.mystories.StoriesActivity;
+import gr.mobap.mystories.activities.StoriesActivity;
 
 
 /**

@@ -1,4 +1,4 @@
-package gr.mobap.mystories;
+package gr.mobap.mystories.utilities;
 
 
 import android.app.NotificationManager;
@@ -14,6 +14,9 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import gr.mobap.mystories.R;
+import gr.mobap.mystories.activities.StoriesActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 

@@ -1,4 +1,4 @@
-package gr.mobap.mystories;
+package gr.mobap.mystories.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import gr.mobap.mystories.Base;
+import gr.mobap.mystories.R;
 
 public class AboutActivity extends Base {
     @BindView(R.id.toolbar)
@@ -66,9 +68,9 @@ public class AboutActivity extends Base {
 
     private void mail() {
         Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
+        i.setType(getString(R.string.type));
         i.putExtra(Intent.EXTRA_EMAIL,
-                new String[]{"anagnostou74@gmail.com"});
+                new String[]{getString(R.string.address_email)});
         i.putExtra(Intent.EXTRA_SUBJECT,
                 getString(R.string.about_mail));
         i.putExtra(Intent.EXTRA_TEXT, getString(R.string.main_me));
@@ -83,7 +85,7 @@ public class AboutActivity extends Base {
 
     private void launchMarket() {
 
-        Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+        Uri uri = Uri.parse(getString(R.string.market) + this.getPackageName());
         Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
         try {
             startActivity(myAppLinkToMarket);

@@ -1,4 +1,4 @@
-package gr.mobap.mystories;
+package gr.mobap.mystories.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import gr.mobap.mystories.Base;
+import gr.mobap.mystories.R;
 
 
 public class StoriesActivity extends Base {

@@ -2,7 +2,8 @@
     <string name="app_name">My Stories</string>
     <!-- Email -->
     <string name="email">Send email to Developer</string>
-    <string name="rate">Rate the application</string>
+    <string name="address_email">anagnostou74@gmail.com</string>
+    <string name="type">message/rfc822</string>
     <string name="about">About</string>
     <string name="about_text"><![CDATA[ <h2>My Stories</h2>\n
     <h2>Udacity</h2>\n
@@ -18,6 +19,9 @@
     <string name="main_me">I am sending you this message through My Stories app and I want…</string>
     <string name="send">Sending email</string>
     <string name="no_mail_programs">No mail programs installed</string>
+    <!-- Rate the app -->
+    <string name="market">market://details?id=</string>
+    <string name="rate">Rate the application</string>
     <!-- Play store -->
     <string name="failed2">I could not communicate with Google Play! Check your internet connection.</string>
     <!-- Navigation Drawer -->
@@ -31,5 +35,9 @@
     <string name="timeline_empty">Tweets are coming…</string>
     <!-- Network -->
     <string name="no_network">There is no network connection</string>
+    <string name="please_wait">Please wait</string>
+    <!-- Authentication -->
+    <string name="loggin_in">Logging in</string>
+    <string name="authentication_failed">Authentication failed.</string>
 
 </resources>
