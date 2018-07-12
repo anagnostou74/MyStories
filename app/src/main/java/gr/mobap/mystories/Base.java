@@ -26,10 +26,13 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            Intent i = new Intent(Base.this, LoginActivity.class);
+            Intent i = new Intent(Base.this, StoriesActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_twitter) {
             Intent i = new Intent(Base.this, TimelineActivity.class);
+            startActivity(i);
+        } else if (id == R.id.nav_login) {
+            Intent i = new Intent(Base.this, LoginActivity.class);
             startActivity(i);
         }
 
@@ -63,7 +66,8 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
             Intent i = new Intent(Base.this, AboutActivity.class);
-            startActivity(i);        }
+            startActivity(i);
+        }
 
         return super.onOptionsItemSelected(item);
     }

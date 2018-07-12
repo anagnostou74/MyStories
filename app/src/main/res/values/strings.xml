@@ -37,7 +37,9 @@
     <string name="no_network">There is no network connection</string>
     <string name="please_wait">Please wait</string>
     <!-- Authentication -->
-    <string name="loggin_in">Logging in</string>
+    <string name="log_in">Log in</string>
+    <string name="logout">Log out</string>
+    <string name="disconnect">Disconnect</string>
     <string name="authentication_failed">Authentication failed.</string>
 
 </resources>
