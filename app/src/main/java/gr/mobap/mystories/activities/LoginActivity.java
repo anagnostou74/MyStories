@@ -3,10 +3,7 @@ package gr.mobap.mystories.activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -38,13 +36,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.utilities.GlideApp;
 
 public class LoginActivity extends Base implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     @BindView(R.id.toolbar)
@@ -53,6 +49,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+
     @BindView(R.id.sign_out_button)
     Button signOutButton;
     @BindView(R.id.disconnect_button)
@@ -82,7 +79,6 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.disconnect_button).setOnClickListener(this);
 
@@ -254,10 +250,17 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             if (user.getPhotoUrl() != null) {
-                new DownloadImageTask().execute(user.getPhotoUrl().toString());
+                GlideApp
+                        .with(this)
+                        .load(user.getPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_launcher_background)
+                        .into(mDisplayImageView);
+
             }
             mNameTextView.setText(user.getDisplayName());
-            mEmailTextView.append(user.getEmail());
+            mEmailTextView.setText(user.getEmail());
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             signOutButton.setVisibility(View.VISIBLE);
@@ -265,7 +268,6 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         } else {
             mDisplayImageView.getLayoutParams().width = (getResources().getDisplayMetrics().widthPixels / 100) * 64;
             mDisplayImageView.setImageResource(R.mipmap.ic_launcher_round);
-            mNameTextView.setText(null);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
             disconnectButton.setVisibility(View.GONE);
@@ -282,7 +284,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.nav_login:
+            case R.id.sign_in_button:
                 signIn();
                 break;
             case R.id.sign_out_button:
@@ -294,25 +296,4 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         }
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            Bitmap mIcon = null;
-            try {
-                InputStream in = new URL(urls[0]).openStream();
-                mIcon = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return mIcon;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (result != null) {
-                mDisplayImageView.getLayoutParams().width = (getResources().getDisplayMetrics().widthPixels / 100) * 24;
-                mDisplayImageView.setImageBitmap(result);
-            }
-        }
-    }
 }
