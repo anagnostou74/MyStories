@@ -21,3 +21,4 @@ The app is addressed to the average person who wants to read or see something fu
 
 A user will be capable to read stories, view pictures and see video. The content will be updated every day from a Firebase database.
 
+_The launcher icon is from the wonderful site <a href='https://www.pexels.com' target="_blank">Pexels</a>._
