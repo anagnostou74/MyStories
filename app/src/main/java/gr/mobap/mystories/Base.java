@@ -34,6 +34,9 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         } else if (id == R.id.nav_login) {
             Intent i = new Intent(Base.this, LoginActivity.class);
             startActivity(i);
+        } else if (id == R.id.nav_logout) {
+            Intent i = new Intent(Base.this, LoginActivity.class);
+            startActivity(i);
         }
 
         drawer.closeDrawer(GravityCompat.START);

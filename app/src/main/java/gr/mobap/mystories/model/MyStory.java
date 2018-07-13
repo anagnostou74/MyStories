@@ -30,7 +30,7 @@ public class MyStory implements Parcelable {
 
     };
 
-    protected MyStory(Parcel in) {
+    private MyStory(Parcel in) {
         this.type = ((String) in.readValue((String.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.main = ((String) in.readValue((String.class.getClassLoader())));

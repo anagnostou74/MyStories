@@ -14,16 +14,13 @@
             android:title="@string/twitter" />
         <item
             android:id="@+id/nav_login"
-            android:icon="@drawable/ic_menu_home"
+            android:icon="@drawable/ic_menu_account"
             android:title="@string/log_in" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_home"
-            android:title="@string/logout" />
-        <item
-            android:id="@+id/nav_disconnect"
-            android:icon="@drawable/ic_menu_home"
-            android:title="@string/disconnect" />
+            android:icon="@drawable/ic_menu_account"
+            android:title="@string/log_out" />
+
     </group>
 
 

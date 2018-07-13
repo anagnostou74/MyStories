@@ -1,7 +1,6 @@
 package gr.mobap.mystories.activities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,9 +11,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,20 +25,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.utilities.AndroidNetworkUtility;
 import gr.mobap.mystories.utilities.GlideApp;
 
 public class LoginActivity extends Base implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -62,9 +58,11 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     private static final String TAG = "GoogleSignInActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    private ImageView mDisplayImageView;
+    private CircleImageView mDisplayImageView;
     private TextView mNameTextView;
     private TextView mEmailTextView;
+    private MenuItem mLogInTextView;
+    private MenuItem mLogOutTextView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,9 +82,44 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
 
         navigationView.setNavigationItemSelectedListener(this);
         View navHeaderView = navigationView.getHeaderView(0);
-        mDisplayImageView = (ImageView) navHeaderView.findViewById(R.id.personalImageView);
-        mNameTextView = (TextView) navHeaderView.findViewById(R.id.name);
-        mEmailTextView = (TextView) navHeaderView.findViewById(R.id.email);
+        mDisplayImageView = navHeaderView.findViewById(R.id.personalImageView);
+        mNameTextView = navHeaderView.findViewById(R.id.name);
+        mEmailTextView = navHeaderView.findViewById(R.id.email);
+
+        mLogInTextView = navigationView.getMenu().findItem(R.id.nav_login);
+        mLogOutTextView = navigationView.getMenu().findItem(R.id.nav_logout);
+
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (mFirebaseUser == null) {
+            GlideApp
+                    .with(this)
+                    .load(R.drawable.ic_account)
+                    .apply(RequestOptions.circleCropTransform())
+                    .error(android.R.drawable.sym_def_app_icon)
+                    .centerCrop()
+                    .placeholder(android.R.drawable.sym_def_app_icon)
+                    .into(mDisplayImageView);
+            mNameTextView.setVisibility(View.GONE);
+            mEmailTextView.setVisibility(View.GONE);
+            mLogOutTextView.setVisible(false);
+        } else {
+            if (mFirebaseUser.getPhotoUrl() != null) {
+                GlideApp
+                        .with(this)
+                        .load(mFirebaseUser.getPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .error(android.R.drawable.sym_def_app_icon)
+                        .centerCrop()
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .into(mDisplayImageView);
+
+            }
+            mNameTextView.setText(mFirebaseUser.getDisplayName());
+            mEmailTextView.setText(mFirebaseUser.getEmail());
+            mLogInTextView.setVisible(false);
+        }
 
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
@@ -104,21 +137,18 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                 .build();
 
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-                updateUI(user);
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
             }
+            updateUI(user);
         };
     }
 
-    public void showProgressDialog() {
+    private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.please_wait));
@@ -127,7 +157,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         mProgressDialog.show();
     }
 
-    public void hideProgressDialog() {
+    private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
@@ -170,81 +200,70 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         showProgressDialog();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-                if (!task.isSuccessful()) {
-                    mNameTextView.setText(task.getException().getMessage());
-                } else {
-                    mNameTextView.setTextColor(Color.DKGRAY);
-                }
-                hideProgressDialog();
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+            if (!task.isSuccessful()) {
+                mNameTextView.setText(task.getException().getMessage());
+            } else {
+                mNameTextView.setTextColor(Color.DKGRAY);
             }
+            hideProgressDialog();
         });
     }
 
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        AndroidNetworkUtility androidNetworkUtility = new AndroidNetworkUtility();
+        if (androidNetworkUtility.isConnected(this)) {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        } else {
+            Toast.makeText(LoginActivity.this, getString(R.string.no_network),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void signOut() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(R.string.logout);
-        alert.setCancelable(false);
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        AndroidNetworkUtility androidNetworkUtility = new AndroidNetworkUtility();
+        if (androidNetworkUtility.isConnected(this)) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.log_out);
+            alert.setCancelable(false);
+            alert.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
                 // Firebase sign out
                 mAuth.signOut();
                 // Google sign out
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(@NonNull Status status) {
-                                updateUI(null);
-                            }
-                        }
+                        status -> updateUI(null)
                 );
-            }
-        });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        alert.show();
+            });
+            alert.setNegativeButton(android.R.string.no, (dialogInterface, i) -> dialogInterface.dismiss());
+            alert.show();
+        } else {
+            Toast.makeText(LoginActivity.this, getString(R.string.no_network),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void revokeAccess() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(R.string.logout);
-        alert.setCancelable(false);
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        AndroidNetworkUtility androidNetworkUtility = new AndroidNetworkUtility();
+        if (androidNetworkUtility.isConnected(this)) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage(R.string.log_out);
+            alert.setCancelable(false);
+            alert.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
                 // Firebase sign out
                 mAuth.signOut();
                 // Google revoke access
                 Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(@NonNull Status status) {
-                                updateUI(null);
-                            }
-                        }
+                        status -> updateUI(null)
                 );
-            }
-        });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        alert.show();
+            });
+            alert.setNegativeButton(android.R.string.no, (dialogInterface, i) -> dialogInterface.dismiss());
+            alert.show();
+        } else {
+            Toast.makeText(LoginActivity.this, getString(R.string.no_network),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateUI(FirebaseUser user) {
@@ -255,19 +274,31 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                         .load(user.getPhotoUrl())
                         .apply(RequestOptions.circleCropTransform())
                         .centerCrop()
-                        .placeholder(R.drawable.ic_launcher_background)
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .error(android.R.drawable.sym_def_app_icon)
                         .into(mDisplayImageView);
 
             }
             mNameTextView.setText(user.getDisplayName());
             mEmailTextView.setText(user.getEmail());
+            mLogInTextView.setVisible(false);
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             signOutButton.setVisibility(View.VISIBLE);
             disconnectButton.setVisibility(View.VISIBLE);
         } else {
-            mDisplayImageView.getLayoutParams().width = (getResources().getDisplayMetrics().widthPixels / 100) * 64;
-            mDisplayImageView.setImageResource(R.mipmap.ic_launcher_round);
+            GlideApp
+                    .with(this)
+                    .load(R.drawable.ic_account)
+                    .apply(RequestOptions.circleCropTransform())
+                    .error(android.R.drawable.sym_def_app_icon)
+                    .centerCrop()
+                    .placeholder(android.R.drawable.sym_def_app_icon)
+                    .into(mDisplayImageView);
+            mNameTextView.setVisibility(View.GONE);
+            mEmailTextView.setVisibility(View.GONE);
+            mLogOutTextView.setVisible(false);
+
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
             disconnectButton.setVisibility(View.GONE);

@@ -13,14 +13,13 @@ import com.twitter.sdk.android.tweetui.TweetUi;
 import static gr.mobap.mystories.BuildConfig.CONSUMER_KEY;
 import static gr.mobap.mystories.BuildConfig.CONSUMER_SECRET;
 
-public class MyStoriesApplication extends Application {
-    private FirebaseAnalytics mFirebaseAnalytics;
+class MyStoriesApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
         // Obtain the FirebaseAnalytics instance.
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         //Twitter sdk initialization
         TwitterConfig config = new TwitterConfig.Builder(this)
@@ -29,6 +28,6 @@ public class MyStoriesApplication extends Application {
                 .debug(true)
                 .build();
         Twitter.initialize(config);
-        new Thread(() -> TweetUi.getInstance()).start();
+        new Thread(TweetUi::getInstance).start();
     }
 }

@@ -38,7 +38,7 @@
     <string name="please_wait">Please wait</string>
     <!-- Authentication -->
     <string name="log_in">Log in</string>
-    <string name="logout">Log out</string>
+    <string name="log_out">Log out</string>
     <string name="disconnect">Disconnect</string>
     <string name="authentication_failed">Authentication failed.</string>
 
