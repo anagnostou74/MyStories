@@ -14,7 +14,10 @@
     <h3>Intended User</h3>\n
     The app is addressed to the average person who wants to read or see something funny and get undistressed from every day’s pressure.\n
     <h3>Features</h3>\n
-    A user will be capable to read stories, view pictures and see video. The content will be updated every day from a Firebase database.\n]]></string>
+    A user will be capable to read stories, view pictures and see video. The content will be updated every day from a Firebase database.\n\n
+    <h3>Worth the visit</h3>\n
+    <ul><li> You can get the source code of the application in <a href="https://github.com/anagnostou74/MyStories" target="_blank">GitHub</a>.</li>\n\n
+    <li> Visit <a href="https://www.udacity.com/" target="_blank">Udacity</a> to find your suitable course. #NeverStopLearning #ThankYou</li></ul>\n\n]]></string>
     <string name="about_mail">About My Stories application</string>
     <string name="main_me">I am sending you this message through My Stories app and I want…</string>
     <string name="send">Sending email</string>
