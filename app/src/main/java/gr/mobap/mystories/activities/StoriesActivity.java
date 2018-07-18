@@ -1,26 +1,44 @@
 package gr.mobap.mystories.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.model.MyStory;
 import gr.mobap.mystories.utilities.GlideApp;
+import gr.mobap.mystories.viewholder.StoriesViewHolder;
 
 public class StoriesActivity extends Base {
 
@@ -32,6 +50,14 @@ public class StoriesActivity extends Base {
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private RecyclerView recyclerView;
+
+    FirebaseRecyclerAdapter adapter;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +86,11 @@ public class StoriesActivity extends Base {
         MenuItem mLogInTextView = navigationView.getMenu().findItem(R.id.nav_login);
         MenuItem mLogOutTextView = navigationView.getMenu().findItem(R.id.nav_logout);
 
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("stories");
+        Log.d("Ref", String.valueOf(myRef));
 
         if (mFirebaseUser == null) {
             GlideApp
@@ -91,6 +120,84 @@ public class StoriesActivity extends Base {
             mEmailTextView.setText(mFirebaseUser.getEmail());
             mLogInTextView.setVisible(false);
         }
+
+        //initialize recyclerview and FIrebase objects
+        recyclerView = (RecyclerView) findViewById(R.id.rv_main);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<MyStory> list = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    MyStory myStory = ds.getValue(MyStory.class);
+                    list.add(myStory);
+                }
+                populateUI();
+                Log.d("TAG", list.toString()); //To see is not empty
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        myRef.addListenerForSingleValueEvent(valueEventListener);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        populateUI();
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    public void populateUI() {
+        FirebaseRecyclerOptions<MyStory> options =
+                new FirebaseRecyclerOptions.Builder<MyStory>()
+                        .setQuery(myRef, MyStory.class)
+                        .build();
+
+        adapter = new FirebaseRecyclerAdapter<MyStory, StoriesViewHolder>(options) {
+            @Override
+            public StoriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                // Create a new instance of the ViewHolder, in this case we are using a custom
+                // layout called R.layout.message for each item
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.main_story_item, parent, false);
+
+                return new StoriesViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(StoriesViewHolder holder, int position, MyStory model) {
+                // Bind the Chat object to the ChatHolder
+                final String post_key = getRef(position).getKey().toString();
+                holder.setTitle(model.getTitle());
+                holder.setDesc(model.getMain());
+                holder.setImageUrl(getApplicationContext(), model.getPhoto());
+                holder.setUserName(model.getUser());
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent singleActivity = new Intent(StoriesActivity.this, StoriesActivity.class);
+                        singleActivity.putExtra("PostID", post_key);
+                        startActivity(singleActivity);
+                    }
+                });
+
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
     }
 
 }
