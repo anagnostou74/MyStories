@@ -50,7 +50,7 @@ public class StoriesActivity extends Base {
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
-    private DatabaseReference mDatabase;
+
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private RecyclerView recyclerView;
@@ -89,7 +89,7 @@ public class StoriesActivity extends Base {
         mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("mystories-2ba02")
+        myRef = database.getReference()
                 .child("stories");
         Log.d("Ref", String.valueOf(myRef));
 
