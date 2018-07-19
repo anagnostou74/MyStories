@@ -89,7 +89,8 @@ public class StoriesActivity extends Base {
         mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("stories");
+        DatabaseReference myRef = database.getReference("mystories-2ba02")
+                .child("stories");
         Log.d("Ref", String.valueOf(myRef));
 
         if (mFirebaseUser == null) {
