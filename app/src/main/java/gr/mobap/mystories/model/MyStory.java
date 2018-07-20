@@ -3,41 +3,44 @@ package gr.mobap.mystories.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-public class MyStory implements Parcelable {
-
-    private String type;
-    private String title;
-    private String main;
-    private String photo;
-    private String video;
-    private String user;
-    private String date;
-
-    public final static Parcelable.Creator<MyStory> CREATOR = new Creator<MyStory>() {
+import java.io.Serializable;
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public MyStory createFromParcel(Parcel in) {
-            return new MyStory(in);
-        }
+public class MyStory implements Serializable, Parcelable {
 
-        public MyStory[] newArray(int size) {
-            return (new MyStory[size]);
-        }
+    @SerializedName("date")
+    @Expose
+    private String Date;
+    @SerializedName("main")
+    @Expose
+    private String Main;
+    @SerializedName("photo")
+    @Expose
+    private String Photo;
+    @SerializedName("title")
+    @Expose
+    private String Title;
+    @SerializedName("type")
+    @Expose
+    private String Type;
+    @SerializedName("user")
+    @Expose
+    private String User;
+    @SerializedName("video")
+    @Expose
+    private String Video;
 
-    };
-
-    private MyStory(Parcel in) {
-        this.type = ((String) in.readValue((String.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.main = ((String) in.readValue((String.class.getClassLoader())));
-        this.photo = ((String) in.readValue((String.class.getClassLoader())));
-        this.video = ((String) in.readValue((String.class.getClassLoader())));
-        this.user = ((String) in.readValue((String.class.getClassLoader())));
-        this.date = ((String) in.readValue((String.class.getClassLoader())));
+    public MyStory(Parcel in) {
+        this.Date = ((String) in.readValue((String.class.getClassLoader())));
+        this.Main = ((String) in.readValue((String.class.getClassLoader())));
+        this.Photo = ((String) in.readValue((String.class.getClassLoader())));
+        this.Title = ((String) in.readValue((String.class.getClassLoader())));
+        this.Type = ((String) in.readValue((String.class.getClassLoader())));
+        this.User = ((String) in.readValue((String.class.getClassLoader())));
+        this.Video = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     /**
@@ -46,82 +49,93 @@ public class MyStory implements Parcelable {
     public MyStory() {
     }
 
-
-    public MyStory(String type, String title, String main, String photo, String video, String user, String date) {
-        super();
-        this.type = type;
-        this.title = title;
-        this.main = main;
-        this.photo = photo;
-        this.video = video;
-        this.user = user;
-        this.date = date;
+    public MyStory(String date, String main, String photo, String title, String type, String user, String video) {
+        this.Date = date;
+        this.Main = main;
+        this.Photo = photo;
+        this.Title = title;
+        this.Type = type;
+        this.User = user;
+        this.Video = video;
     }
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public static final Creator<MyStory> CREATOR = new Creator<MyStory>() {
+        @Override
+        public MyStory createFromParcel(Parcel in) {
+            return new MyStory(in);
+        }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getMain() {
-        return main;
-    }
-
-    public void setMain(String main) {
-        this.main = main;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public String getVideo() {
-        return video;
-    }
-
-    public void setVideo(String video) {
-        this.video = video;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
+        @Override
+        public MyStory[] newArray(int size) {
+            return new MyStory[size];
+        }
+    };
 
     public String getDate() {
-        return date;
+        return Date;
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this.Date = date;
+    }
+
+    public String getMain() {
+        return Main;
+    }
+
+    public void setMain(String main) {
+        this.Main = main;
+    }
+
+    public String getPhoto() {
+        return Photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.Photo = photo;
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+
+    public void setTitle(String title) {
+        this.Title = title;
+    }
+
+    public String getType() {
+        return Type;
+    }
+
+    public void setType(String type) {
+        this.Type = type;
+    }
+
+    public String getUser() {
+        return User;
+    }
+
+    public void setUser(String user) {
+        this.User = user;
+    }
+
+    public String getVideo() {
+        return Video;
+    }
+
+    public void setVideo(String video) {
+        this.Video = video;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(type);
-        dest.writeValue(title);
-        dest.writeValue(main);
-        dest.writeValue(photo);
-        dest.writeValue(video);
-        dest.writeValue(user);
-        dest.writeValue(date);
+        dest.writeString(Date);
+        dest.writeString(Main);
+        dest.writeString(Photo);
+        dest.writeString(Title);
+        dest.writeString(Type);
+        dest.writeString(User);
+        dest.writeString(Video);
     }
 
     public int describeContents() {
