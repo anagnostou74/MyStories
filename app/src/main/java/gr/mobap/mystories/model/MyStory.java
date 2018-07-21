@@ -8,39 +8,42 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-
 public class MyStory implements Serializable, Parcelable {
 
     @SerializedName("date")
     @Expose
-    private String Date;
+    private String date;
     @SerializedName("main")
     @Expose
-    private String Main;
+    private String main;
     @SerializedName("photo")
     @Expose
-    private String Photo;
+    private String photo;
     @SerializedName("title")
     @Expose
-    private String Title;
+    private String title;
     @SerializedName("type")
     @Expose
-    private String Type;
+    private String type;
     @SerializedName("user")
     @Expose
-    private String User;
+    private String user;
     @SerializedName("video")
     @Expose
-    private String Video;
+    private String video;
+    @SerializedName("favorited")
+    @Expose
+    private String favorited;
 
     public MyStory(Parcel in) {
-        this.Date = ((String) in.readValue((String.class.getClassLoader())));
-        this.Main = ((String) in.readValue((String.class.getClassLoader())));
-        this.Photo = ((String) in.readValue((String.class.getClassLoader())));
-        this.Title = ((String) in.readValue((String.class.getClassLoader())));
-        this.Type = ((String) in.readValue((String.class.getClassLoader())));
-        this.User = ((String) in.readValue((String.class.getClassLoader())));
-        this.Video = ((String) in.readValue((String.class.getClassLoader())));
+        this.date = ((String) in.readValue((String.class.getClassLoader())));
+        this.main = ((String) in.readValue((String.class.getClassLoader())));
+        this.photo = ((String) in.readValue((String.class.getClassLoader())));
+        this.title = ((String) in.readValue((String.class.getClassLoader())));
+        this.type = ((String) in.readValue((String.class.getClassLoader())));
+        this.user = ((String) in.readValue((String.class.getClassLoader())));
+        this.video = ((String) in.readValue((String.class.getClassLoader())));
+        this.favorited = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     /**
@@ -49,14 +52,15 @@ public class MyStory implements Serializable, Parcelable {
     public MyStory() {
     }
 
-    public MyStory(String date, String main, String photo, String title, String type, String user, String video) {
-        this.Date = date;
-        this.Main = main;
-        this.Photo = photo;
-        this.Title = title;
-        this.Type = type;
-        this.User = user;
-        this.Video = video;
+    public MyStory(String date, String main, String photo, String title, String type, String user, String video, String favorited) {
+        this.date = date;
+        this.main = main;
+        this.photo = photo;
+        this.title = title;
+        this.type = type;
+        this.user = user;
+        this.video = video;
+        this.favorited = favorited;
     }
 
 
@@ -73,69 +77,78 @@ public class MyStory implements Serializable, Parcelable {
     };
 
     public String getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(String date) {
-        this.Date = date;
+        this.date = date;
     }
 
     public String getMain() {
-        return Main;
+        return main;
     }
 
     public void setMain(String main) {
-        this.Main = main;
+        this.main = main;
     }
 
     public String getPhoto() {
-        return Photo;
+        return photo;
     }
 
     public void setPhoto(String photo) {
-        this.Photo = photo;
+        this.photo = photo;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        this.Title = title;
+        this.title = title;
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public void setType(String type) {
-        this.Type = type;
+        this.type = type;
     }
 
     public String getUser() {
-        return User;
+        return user;
     }
 
     public void setUser(String user) {
-        this.User = user;
+        this.user = user;
     }
 
     public String getVideo() {
-        return Video;
+        return video;
     }
 
     public void setVideo(String video) {
-        this.Video = video;
+        this.video = video;
+    }
+
+    public String getFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(String favorited) {
+        this.favorited = favorited;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(Date);
-        dest.writeString(Main);
-        dest.writeString(Photo);
-        dest.writeString(Title);
-        dest.writeString(Type);
-        dest.writeString(User);
-        dest.writeString(Video);
+        dest.writeString(date);
+        dest.writeString(main);
+        dest.writeString(photo);
+        dest.writeString(title);
+        dest.writeString(type);
+        dest.writeString(user);
+        dest.writeString(video);
+        dest.writeString(video);
     }
 
     public int describeContents() {
