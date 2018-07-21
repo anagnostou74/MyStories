@@ -55,7 +55,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
-    private static final String TAG = "GoogleSignInActivity";
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
 
     private CircleImageView mDisplayImageView;
