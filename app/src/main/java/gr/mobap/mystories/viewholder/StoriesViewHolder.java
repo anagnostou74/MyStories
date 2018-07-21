@@ -6,19 +6,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.utilities.GlideApp;
 
 public class StoriesViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.title)
-    TextView titleTv;
-    @BindView(R.id.num_stars)
-    TextView num_stars;
     @BindView(R.id.iv_main_pic)
     ImageView iv_main_pic;
+    @BindView(R.id.title)
+    TextView titleTv;
+    @BindView(R.id.star)
+    ImageView star;
+    @BindView(R.id.num_stars)
+    TextView num_stars;
+    @BindView(R.id.user_photo)
+    ImageView userPhoto;
     @BindView(R.id.author)
     TextView author;
 
@@ -27,16 +30,30 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
+    public void setMainImageUrl(Context ctx, String imageUrl) {
+        GlideApp.with(ctx)
+                .load(imageUrl)
+                .into(iv_main_pic);
+    }
+
     public void setTitle(String title) {
         titleTv.setText(title);
     }
 
-    public void setDesc(String desc) {
-        num_stars.setText(desc);
+    public void setStarImage(Context ctx, String imageUrl) {
+        GlideApp.with(ctx)
+                .load(imageUrl)
+                .into(star);
     }
 
-    public void setImageUrl(Context ctx, String imageUrl) {
-        Picasso.with(ctx).load(imageUrl).into(iv_main_pic);
+    public void setStar(String star) {
+        num_stars.setText(star);
+    }
+
+    public void setUserPhoto(Context ctx, String imageUrl) {
+        GlideApp.with(ctx)
+                .load(imageUrl)
+                .into(userPhoto);
     }
 
     public void setUserName(String userName) {
