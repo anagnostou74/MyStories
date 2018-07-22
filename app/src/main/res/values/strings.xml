@@ -44,5 +44,11 @@
     <string name="log_out">Log out</string>
     <string name="disconnect">Disconnect</string>
     <string name="authentication_failed">Authentication failed.</string>
+    <!-- PostActivity -->
+    <string name="post">Post</string>
+    <string name="title">Title</string>
+    <string name="main">Main</string>
+    <string name="date">Date</string>
+    <string name="user">Author name</string>
 
 </resources>
