@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_menu_home"
             android:title="@string/app_name" />
         <item
+            android:id="@+id/nav_post"
+            android:icon="@drawable/ic_library_add_24dp"
+            android:title="@string/post_story" />
+        <item
             android:id="@+id/nav_twitter"
             android:icon="@drawable/ic_menu_twitter"
             android:title="@string/twitter" />

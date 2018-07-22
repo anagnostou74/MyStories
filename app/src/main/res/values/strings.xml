@@ -45,6 +45,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="authentication_failed">Authentication failed.</string>
     <!-- PostActivity -->
+    <string name="post_story">Post a story</string>
     <string name="post">Post</string>
     <string name="title">Title</string>
     <string name="main">Main</string>

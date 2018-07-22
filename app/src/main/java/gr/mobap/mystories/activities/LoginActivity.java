@@ -63,6 +63,8 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     private TextView mEmailTextView;
     private MenuItem mLogInTextView;
     private MenuItem mLogOutTextView;
+    private MenuItem mPostTextView;
+    FirebaseAuth mFirebaseAuth;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +83,13 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         findViewById(R.id.disconnect_button).setOnClickListener(this);
 
         navigationView.setNavigationItemSelectedListener(this);
+
         View navHeaderView = navigationView.getHeaderView(0);
         mDisplayImageView = navHeaderView.findViewById(R.id.personalImageView);
         mNameTextView = navHeaderView.findViewById(R.id.name);
         mEmailTextView = navHeaderView.findViewById(R.id.email);
 
+        mPostTextView = navigationView.getMenu().findItem(R.id.nav_post);
         mLogInTextView = navigationView.getMenu().findItem(R.id.nav_login);
         mLogOutTextView = navigationView.getMenu().findItem(R.id.nav_logout);
 
@@ -103,6 +107,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                     .into(mDisplayImageView);
             mNameTextView.setVisibility(View.GONE);
             mEmailTextView.setVisibility(View.GONE);
+            mPostTextView.setVisible(false);
             mLogOutTextView.setVisible(false);
         } else {
             if (mFirebaseUser.getPhotoUrl() != null) {
@@ -248,7 +253,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         AndroidNetworkUtility androidNetworkUtility = new AndroidNetworkUtility();
         if (androidNetworkUtility.isConnected(this)) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage(R.string.log_out);
+            alert.setMessage(R.string.disconnect);
             alert.setCancelable(false);
             alert.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
                 // Firebase sign out
@@ -298,6 +303,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
             mNameTextView.setVisibility(View.GONE);
             mEmailTextView.setVisibility(View.GONE);
             mLogOutTextView.setVisible(false);
+            mPostTextView.setVisible(false);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);

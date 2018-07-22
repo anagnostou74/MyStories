@@ -20,6 +20,7 @@ import butterknife.BindView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.activities.AboutActivity;
 import gr.mobap.mystories.activities.LoginActivity;
+import gr.mobap.mystories.activities.PostActivity;
 import gr.mobap.mystories.activities.StoriesActivity;
 import gr.mobap.mystories.twitter.TimelineActivity;
 import gr.mobap.mystories.utilities.GlideApp;
@@ -40,6 +41,9 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
 
         if (id == R.id.nav_home) {
             Intent i = new Intent(Base.this, StoriesActivity.class);
+            startActivity(i);
+        } else if (id == R.id.nav_post) {
+            Intent i = new Intent(Base.this, PostActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_twitter) {
             Intent i = new Intent(Base.this, TimelineActivity.class);
@@ -96,6 +100,7 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
         TextView mNameTextView = navHeaderView.findViewById(R.id.name);
         TextView mEmailTextView = navHeaderView.findViewById(R.id.email);
 
+        MenuItem mPostTextView = navigationView.getMenu().findItem(R.id.nav_post);
         MenuItem mLogInTextView = navigationView.getMenu().findItem(R.id.nav_login);
         MenuItem mLogOutTextView = navigationView.getMenu().findItem(R.id.nav_logout);
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -112,6 +117,7 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
                     .into(mDisplayImageView);
             mNameTextView.setVisibility(View.GONE);
             mEmailTextView.setVisibility(View.GONE);
+            mPostTextView.setVisible(false);
             mLogOutTextView.setVisible(false);
         } else {
             if (mFirebaseUser.getPhotoUrl() != null) {

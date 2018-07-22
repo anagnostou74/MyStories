@@ -38,6 +38,9 @@
         <activity
             android:name=".activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.PostActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".utilities.MyFirebaseMessagingService"
