@@ -34,6 +34,12 @@ public class MyStory implements Serializable, Parcelable {
     @SerializedName("user")
     @Expose
     private String user;
+    @SerializedName("userPhoto")
+    @Expose
+    private String userPhoto;
+    @SerializedName("email")
+    @Expose
+    private String email;
     @SerializedName("video")
     @Expose
     private String video;
@@ -50,6 +56,8 @@ public class MyStory implements Serializable, Parcelable {
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.type = ((String) in.readValue((String.class.getClassLoader())));
         this.user = ((String) in.readValue((String.class.getClassLoader())));
+        this.userPhoto = ((String) in.readValue((String.class.getClassLoader())));
+        this.email = ((String) in.readValue((String.class.getClassLoader())));
         this.video = ((String) in.readValue((String.class.getClassLoader())));
         this.favorited = ((String) in.readValue((String.class.getClassLoader())));
     }
@@ -60,7 +68,7 @@ public class MyStory implements Serializable, Parcelable {
     public MyStory() {
     }
 
-    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String video, String favorited) {
+    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String userPhoto, String email, String video, String favorited) {
         this.date = date;
         this.prologue = prologue;
         this.body = body;
@@ -69,6 +77,8 @@ public class MyStory implements Serializable, Parcelable {
         this.title = title;
         this.type = type;
         this.user = user;
+        this.userPhoto = userPhoto;
+        this.email = email;
         this.video = video;
         this.favorited = favorited;
     }
@@ -150,6 +160,22 @@ public class MyStory implements Serializable, Parcelable {
         this.user = user;
     }
 
+    public String getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.user = userPhoto;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getVideo() {
         return video;
     }
@@ -175,8 +201,10 @@ public class MyStory implements Serializable, Parcelable {
         dest.writeString(title);
         dest.writeString(type);
         dest.writeString(user);
+        dest.writeString(userPhoto);
+        dest.writeString(email);
         dest.writeString(video);
-        dest.writeString(video);
+        dest.writeString(favorited);
     }
 
     public int describeContents() {

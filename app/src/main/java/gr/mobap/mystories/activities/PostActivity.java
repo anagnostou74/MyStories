@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,12 +41,15 @@ import com.google.firebase.storage.UploadTask;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.model.MyStory;
 import gr.mobap.mystories.utilities.GlideApp;
 
 public class PostActivity extends Base {
@@ -76,13 +80,13 @@ public class PostActivity extends Base {
     @BindView(R.id.authorImageView)
     CircleImageView authorImageView;
     @BindView(R.id.btnPost)
-    Button post;
+    Button btnPost;
 
     private static final String TAG = PostActivity.class.getSimpleName();
     private static final int GALLERY_REQUEST_CODE = 100;
     private Uri uri = null;
     private StorageReference mStorageRef;
-    DatabaseReference myRef, mAuthor;
+    DatabaseReference myRef;
     Uri downloadUrl;
     private RadioGroup radioGroup;
     private RadioButton radioButton;
@@ -112,9 +116,11 @@ public class PostActivity extends Base {
         myRef = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("stories");
+        Log.d(TAG + "myRef: ", String.valueOf(myRef)); //To see is not empty
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        mAuthor = myRef.child(mFirebaseUser.getUid());
+        //mAuthor = myRef.child(mFirebaseUser.getUid());
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
         final String date = df.format(Calendar.getInstance().getTime());
@@ -143,7 +149,7 @@ public class PostActivity extends Base {
             }
         });
         // posting to Firebase
-        post.setOnClickListener(new View.OnClickListener() {
+        btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(PostActivity.this, "POSTING...", Toast.LENGTH_LONG).show();
@@ -162,6 +168,7 @@ public class PostActivity extends Base {
                     }
                 });
 
+                Log.d(TAG + "data for db: ", title + prologue + body + epilogue + type); //To see is not empty
 
                 // do a check for empty fields
                 if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
@@ -196,39 +203,45 @@ public class PostActivity extends Base {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri;
-                                    Toast.makeText(getBaseContext(), "Upload success! URL - " + downloadUrl.toString(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Upload success! " + downloadUrl.toString(), Toast.LENGTH_SHORT).show();
+
+                                    final DatabaseReference newPost = myRef.push();
+                                    //adding post contents to database reference
+                                    newPost.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            newPost.child("date").setValue(date);
+                                            newPost.child("prologue").setValue(prologue);
+                                            newPost.child("body").setValue(body);
+                                            newPost.child("epilogue").setValue(epilogue);
+                                            newPost.child("photo").setValue(uri.toString());
+                                            newPost.child("title").setValue(title);
+                                            newPost.child("type").setValue(type);
+                                            newPost.child("user").setValue(mFirebaseUser.getDisplayName());
+                                            newPost.child("email").setValue(mFirebaseUser.getEmail());
+                                            //newPost.child("userphoto").setValue(mFirebaseUser.getPhotoUrl());
+                                            newPost.child("mystories").setValue(date + mFirebaseUser.getEmail() + title)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
+                                                                startActivity(intent);
+                                                            }
+                                                        }
+                                                    });
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
                             });
 
-                            final DatabaseReference newPost = myRef.push();
-                            //adding post contents to database reference
-                            mAuthor.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    newPost.child("title").setValue(title);
-                                    newPost.child("prologue").setValue(prologue);
-                                    newPost.child("body").setValue(body);
-                                    newPost.child("epilogue").setValue(epilogue);
-                                    newPost.child("type").setValue(type);
-                                    newPost.child("imageUrl").setValue(downloadUrl.toString());
-                                    newPost.child("date").setValue(date);
-                                    newPost.child("username").setValue(dataSnapshot.child("user").getValue())
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            });
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
                         }
                     });
 
