@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -24,6 +25,8 @@ public class MyStoriesApplication extends Application {
         // initialize firebase database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         database.setPersistenceEnabled(true);
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
 
         //Twitter sdk initialization
         TwitterConfig config = new TwitterConfig.Builder(this)

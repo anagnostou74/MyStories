@@ -24,8 +24,8 @@ android {
     }
     buildTypes {
         buildTypes.each {
-            it.buildConfigField ('String', 'CONSUMER_KEY', CONSUMER_KEY)
-            it.buildConfigField ('String', 'CONSUMER_SECRET', CONSUMER_SECRET)
+            it.buildConfigField('String', 'CONSUMER_KEY', CONSUMER_KEY)
+            it.buildConfigField('String', 'CONSUMER_SECRET', CONSUMER_SECRET)
         }
         release {
             minifyEnabled false
@@ -63,6 +63,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:17.0.3'
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.firebaseui:firebase-ui-database:4.1.0'
+    // Storage
+    implementation 'com.google.firebase:firebase-storage:16.0.1'
     // Tests
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
