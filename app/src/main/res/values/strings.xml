@@ -51,5 +51,11 @@
     <string name="main">Main</string>
     <string name="date">Date</string>
     <string name="user">Author name</string>
+    <string name="adventure">Adventure</string>
+    <string name="comedy">Comedy</string>
+    <string name="fairy">Fairy Tale</string>
+    <string name="fiction">Fiction</string>
+    <string name="romance">Romance</string>
+    <string name="thriller">Thriller</string>
 
 </resources>

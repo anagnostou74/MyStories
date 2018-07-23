@@ -34,13 +34,13 @@
             android:layout_marginTop="8dp"
             android:hint="@string/title"
             android:inputType="text"
-            app:layout_constraintBottom_toTopOf="@+id/getMain"
+            app:layout_constraintBottom_toTopOf="@+id/getPrologue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view2" />
 
         <EditText
-            android:id="@+id/getMain"
+            android:id="@+id/getPrologue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -51,52 +51,102 @@
             android:gravity="top|start"
             android:hint="@string/main"
             android:inputType="textMultiLine"
-            android:lines="10"
+            android:lines="4"
+            android:maxLines="7"
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/getBody"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/getTitle" />
+
+        <EditText
+            android:id="@+id/getBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="top|start"
+            android:hint="@string/main"
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:maxLines="14"
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/getEpilogue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/getPrologue" />
+
+        <EditText
+            android:id="@+id/getEpilogue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="top|start"
+            android:hint="@string/main"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="7"
             android:scrollHorizontally="false"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@+id/getType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/getTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/getBody" />
 
         <RadioGroup
             android:id="@+id/getType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/imageBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/getMain">
+            app:layout_constraintTop_toBottomOf="@+id/getEpilogue">
 
             <RadioButton
-                android:id="@+id/radio1"
+                android:id="@+id/adventure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="option 1" />
+                android:text="@string/adventure" />
 
             <RadioButton
-                android:id="@+id/radio2"
+                android:id="@+id/comedy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="option 2" />
+                android:text="@string/comedy" />
 
             <RadioButton
-                android:id="@+id/radio3"
+                android:id="@+id/fairy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="option 3" />
+                android:text="@string/fairy" />
 
             <RadioButton
-                android:id="@+id/radio4"
+                android:id="@+id/fiction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="option 4" />
+                android:text="@string/fiction" />
 
             <RadioButton
-                android:id="@+id/radio5"
+                android:id="@+id/romance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="option 5" />
+                android:text="@string/romance" />
+
+            <RadioButton
+                android:id="@+id/thriller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thriller" />
         </RadioGroup>
 
 
