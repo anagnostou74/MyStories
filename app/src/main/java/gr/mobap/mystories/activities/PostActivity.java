@@ -27,8 +27,12 @@ public class PostActivity extends Base {
 
     @BindView(R.id.getTitle)
     EditText getTitle;
-    @BindView(R.id.getMain)
-    EditText getMain;
+    @BindView(R.id.getPrologue)
+    EditText getPrologue;
+    @BindView(R.id.getBody)
+    EditText getBody;
+    @BindView(R.id.getEpilogue)
+    EditText getEpilogue;
     @BindView(R.id.getType)
     RadioGroup getType;
     @BindView(R.id.imageBtn)
@@ -49,7 +53,7 @@ public class PostActivity extends Base {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitle(getString(R.string.post));
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

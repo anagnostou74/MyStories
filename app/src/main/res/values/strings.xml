@@ -48,7 +48,9 @@
     <string name="post_story">Post a story</string>
     <string name="post">Post</string>
     <string name="title">Title</string>
-    <string name="main">Main</string>
+    <string name="prologue">Prologue</string>
+    <string name="body">Body</string>
+    <string name="epilogue">Epilogue</string>
     <string name="date">Date</string>
     <string name="user">Author name</string>
     <string name="adventure">Adventure</string>
