@@ -13,9 +13,15 @@ public class MyStory implements Serializable, Parcelable {
     @SerializedName("date")
     @Expose
     private String date;
-    @SerializedName("main")
+    @SerializedName("prologue")
     @Expose
-    private String main;
+    private String prologue;
+    @SerializedName("body")
+    @Expose
+    private String body;
+    @SerializedName("epilogue")
+    @Expose
+    private String epilogue;
     @SerializedName("photo")
     @Expose
     private String photo;
@@ -37,7 +43,9 @@ public class MyStory implements Serializable, Parcelable {
 
     public MyStory(Parcel in) {
         this.date = ((String) in.readValue((String.class.getClassLoader())));
-        this.main = ((String) in.readValue((String.class.getClassLoader())));
+        this.prologue = ((String) in.readValue((String.class.getClassLoader())));
+        this.body = ((String) in.readValue((String.class.getClassLoader())));
+        this.epilogue = ((String) in.readValue((String.class.getClassLoader())));
         this.photo = ((String) in.readValue((String.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.type = ((String) in.readValue((String.class.getClassLoader())));
@@ -52,9 +60,11 @@ public class MyStory implements Serializable, Parcelable {
     public MyStory() {
     }
 
-    public MyStory(String date, String main, String photo, String title, String type, String user, String video, String favorited) {
+    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String video, String favorited) {
         this.date = date;
-        this.main = main;
+        this.prologue = prologue;
+        this.body = body;
+        this.epilogue = epilogue;
         this.photo = photo;
         this.title = title;
         this.type = type;
@@ -84,12 +94,28 @@ public class MyStory implements Serializable, Parcelable {
         this.date = date;
     }
 
-    public String getMain() {
-        return main;
+    public String getPrologue() {
+        return prologue;
     }
 
-    public void setMain(String main) {
-        this.main = main;
+    public void setPrologue(String prologue) {
+        this.prologue = prologue;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getEpilogue() {
+        return epilogue;
+    }
+
+    public void setEpilogue(String epilogue) {
+        this.epilogue = epilogue;
     }
 
     public String getPhoto() {
@@ -142,7 +168,9 @@ public class MyStory implements Serializable, Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(date);
-        dest.writeString(main);
+        dest.writeString(prologue);
+        dest.writeString(body);
+        dest.writeString(epilogue);
         dest.writeString(photo);
         dest.writeString(title);
         dest.writeString(type);
