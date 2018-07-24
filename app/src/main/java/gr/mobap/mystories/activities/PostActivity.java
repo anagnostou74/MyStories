@@ -17,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -159,17 +158,14 @@ public class PostActivity extends Base {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(PostActivity.this, "POSTING...", Toast.LENGTH_LONG).show();
                 final String title = getTitle.getText().toString().trim();
                 final String prologue = getPrologue.getText().toString().trim();
                 final String body = getBody.getText().toString().trim();
                 final String epilogue = getEpilogue.getText().toString().trim();
 
                 int radioButtonID = getType.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) getType.findViewById(radioButtonID);
+                RadioButton radioButton = getType.findViewById(radioButtonID);
                 type = (String) radioButton.getText();
-
-                Log.d(TAG + "data for db: ", title + prologue + body + epilogue + type); //To see is not empty
 
                 // do a check for empty fields
                 if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
@@ -197,6 +193,7 @@ public class PostActivity extends Base {
                             // Handle unsuccessful uploads
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -204,13 +201,15 @@ public class PostActivity extends Base {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri;
-                                    Toast.makeText(getBaseContext(), "Upload success! " + downloadUrl.toString(), Toast.LENGTH_SHORT).show();
+                                    Uri userPhoto = mFirebaseUser.getPhotoUrl();
 
                                     final DatabaseReference newPost = myRef.push();
                                     //adding post contents to database reference
                                     newPost.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+
+
                                             newPost.child("date").setValue(date);
                                             newPost.child("prologue").setValue(prologue);
                                             newPost.child("body").setValue(body);
@@ -220,7 +219,7 @@ public class PostActivity extends Base {
                                             newPost.child("user").setValue(mFirebaseUser.getDisplayName());
                                             newPost.child("email").setValue(mFirebaseUser.getEmail());
                                             newPost.child("favorited").setValue(0);
-                                            newPost.child("userPhoto").setValue(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
+                                            newPost.child("image").setValue(userPhoto.toString());
                                             newPost.child("type").setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {

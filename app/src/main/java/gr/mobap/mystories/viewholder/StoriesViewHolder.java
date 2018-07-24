@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.R;
 import gr.mobap.mystories.utilities.GlideApp;
 
@@ -21,7 +22,7 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.num_stars)
     TextView num_stars;
     @BindView(R.id.user_photo)
-    ImageView userPhoto;
+    CircleImageView user_photo;
     @BindView(R.id.author)
     TextView author;
 
@@ -53,7 +54,7 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
     public void setUserPhoto(Context ctx, String imageUrl) {
         GlideApp.with(ctx)
                 .load(imageUrl)
-                .into(userPhoto);
+                .into(user_photo);
     }
 
     public void setUserName(String userName) {

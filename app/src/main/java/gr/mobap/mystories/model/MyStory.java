@@ -3,10 +3,13 @@ package gr.mobap.mystories.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyStory implements Serializable, Parcelable {
 
@@ -34,9 +37,9 @@ public class MyStory implements Serializable, Parcelable {
     @SerializedName("user")
     @Expose
     private String user;
-    @SerializedName("userPhoto")
+    @SerializedName("image")
     @Expose
-    private String userPhoto;
+    private String image;
     @SerializedName("email")
     @Expose
     private String email;
@@ -56,7 +59,7 @@ public class MyStory implements Serializable, Parcelable {
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.type = ((String) in.readValue((String.class.getClassLoader())));
         this.user = ((String) in.readValue((String.class.getClassLoader())));
-        this.userPhoto = ((String) in.readValue((String.class.getClassLoader())));
+        this.image = ((String) in.readValue((String.class.getClassLoader())));
         this.email = ((String) in.readValue((String.class.getClassLoader())));
         this.video = ((String) in.readValue((String.class.getClassLoader())));
         this.favorited = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -64,11 +67,26 @@ public class MyStory implements Serializable, Parcelable {
 
     /**
      * No args constructor for use in serialization
+     *
+     * @param date
+     * @param prologue
+     * @param body
+     * @param epilogue
+     * @param photo
+     * @param title
+     * @param user
+     * @param email
+     * @param i
+     * @param image
+     * @param type
      */
+    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String user, String email, int i, String image, String type) {
+    }
+
     public MyStory() {
     }
 
-    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String userPhoto, String email, String video, Integer favorited) {
+    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String image, String email, String video, Integer favorited) {
         this.date = date;
         this.prologue = prologue;
         this.body = body;
@@ -77,7 +95,7 @@ public class MyStory implements Serializable, Parcelable {
         this.title = title;
         this.type = type;
         this.user = user;
-        this.userPhoto = userPhoto;
+        this.image = image;
         this.email = email;
         this.video = video;
         this.favorited = favorited;
@@ -160,12 +178,12 @@ public class MyStory implements Serializable, Parcelable {
         this.user = user;
     }
 
-    public String getUserPhoto() {
-        return userPhoto;
+    public String getImage() {
+        return image;
     }
 
-    public void setUserPhoto(String userPhoto) {
-        this.user = userPhoto;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getEmail() {
@@ -201,7 +219,7 @@ public class MyStory implements Serializable, Parcelable {
         dest.writeString(title);
         dest.writeString(type);
         dest.writeString(user);
-        dest.writeString(userPhoto);
+        dest.writeString(image);
         dest.writeString(email);
         dest.writeString(video);
         dest.writeInt(favorited);
@@ -209,6 +227,25 @@ public class MyStory implements Serializable, Parcelable {
 
     public int describeContents() {
         return 0;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("date", date);
+        result.put("prologue", prologue);
+        result.put("body", body);
+        result.put("epilogue", epilogue);
+        result.put("photo", photo);
+        result.put("title", title);
+        result.put("type", type);
+        result.put("user", user);
+        result.put("image", image);
+        result.put("email", email);
+        result.put("video", video);
+        result.put("favorited", favorited);
+
+        return result;
     }
 
 }

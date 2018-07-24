@@ -137,7 +137,7 @@ public class StoriesActivity extends Base {
                 //TODO set star image, get favorites and set, get author photo from Firebase db
                 //holder.setStarImage(getApplicationContext(), model.getPhoto());
                 holder.setStar(model.getFavorited());
-                holder.setUserPhoto(getApplicationContext(), model.getUserPhoto());
+                holder.setUserPhoto(getApplicationContext(), model.getImage());
                 holder.setUserName(model.getUser());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
