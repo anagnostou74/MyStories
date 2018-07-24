@@ -45,7 +45,7 @@ public class MyStory implements Serializable, Parcelable {
     private String video;
     @SerializedName("favorited")
     @Expose
-    private String favorited;
+    private Integer favorited;
 
     public MyStory(Parcel in) {
         this.date = ((String) in.readValue((String.class.getClassLoader())));
@@ -59,7 +59,7 @@ public class MyStory implements Serializable, Parcelable {
         this.userPhoto = ((String) in.readValue((String.class.getClassLoader())));
         this.email = ((String) in.readValue((String.class.getClassLoader())));
         this.video = ((String) in.readValue((String.class.getClassLoader())));
-        this.favorited = ((String) in.readValue((String.class.getClassLoader())));
+        this.favorited = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     /**
@@ -68,7 +68,7 @@ public class MyStory implements Serializable, Parcelable {
     public MyStory() {
     }
 
-    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String userPhoto, String email, String video, String favorited) {
+    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String userPhoto, String email, String video, Integer favorited) {
         this.date = date;
         this.prologue = prologue;
         this.body = body;
@@ -184,11 +184,11 @@ public class MyStory implements Serializable, Parcelable {
         this.video = video;
     }
 
-    public String getFavorited() {
+    public Integer getFavorited() {
         return favorited;
     }
 
-    public void setFavorited(String favorited) {
+    public void setFavorited(Integer favorited) {
         this.favorited = favorited;
     }
 
@@ -204,7 +204,7 @@ public class MyStory implements Serializable, Parcelable {
         dest.writeString(userPhoto);
         dest.writeString(email);
         dest.writeString(video);
-        dest.writeString(favorited);
+        dest.writeInt(favorited);
     }
 
     public int describeContents() {

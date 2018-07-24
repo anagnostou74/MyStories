@@ -41,15 +41,12 @@ import com.google.firebase.storage.UploadTask;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
-import gr.mobap.mystories.model.MyStory;
 import gr.mobap.mystories.utilities.GlideApp;
 
 public class PostActivity extends Base {
@@ -71,6 +68,18 @@ public class PostActivity extends Base {
     EditText getEpilogue;
     @BindView(R.id.getType)
     RadioGroup getType;
+    @BindView(R.id.adventure)
+    RadioButton adventure;
+    @BindView(R.id.comedy)
+    RadioButton comedy;
+    @BindView(R.id.fairy)
+    RadioButton fairy;
+    @BindView(R.id.fiction)
+    RadioButton fiction;
+    @BindView(R.id.romance)
+    RadioButton romance;
+    @BindView(R.id.thriller)
+    RadioButton thriller;
     @BindView(R.id.imageBtn)
     ImageButton imageButton;
     @BindView(R.id.getDate)
@@ -88,8 +97,6 @@ public class PostActivity extends Base {
     private StorageReference mStorageRef;
     DatabaseReference myRef;
     Uri downloadUrl;
-    private RadioGroup radioGroup;
-    private RadioButton radioButton;
     String type;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -157,16 +164,10 @@ public class PostActivity extends Base {
                 final String prologue = getPrologue.getText().toString().trim();
                 final String body = getBody.getText().toString().trim();
                 final String epilogue = getEpilogue.getText().toString().trim();
-                getType.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // get selected radio button from radioGroup
-                        int selectedId = radioGroup.getCheckedRadioButtonId();
-                        // find the radiobutton by returned id
-                        radioButton = (RadioButton) findViewById(selectedId);
-                        type = radioButton.getText().toString();
-                    }
-                });
+
+                int radioButtonID = getType.getCheckedRadioButtonId();
+                RadioButton radioButton = (RadioButton) getType.findViewById(radioButtonID);
+                type = (String) radioButton.getText();
 
                 Log.d(TAG + "data for db: ", title + prologue + body + epilogue + type); //To see is not empty
 
@@ -210,27 +211,25 @@ public class PostActivity extends Base {
                                     newPost.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                                             newPost.child("date").setValue(date);
                                             newPost.child("prologue").setValue(prologue);
                                             newPost.child("body").setValue(body);
                                             newPost.child("epilogue").setValue(epilogue);
                                             newPost.child("photo").setValue(uri.toString());
                                             newPost.child("title").setValue(title);
-                                            newPost.child("type").setValue(type);
                                             newPost.child("user").setValue(mFirebaseUser.getDisplayName());
                                             newPost.child("email").setValue(mFirebaseUser.getEmail());
-                                            //newPost.child("userphoto").setValue(mFirebaseUser.getPhotoUrl());
-                                            newPost.child("mystories").setValue(date + mFirebaseUser.getEmail() + title)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
-                                                                startActivity(intent);
-                                                            }
-                                                        }
-                                                    });
+                                            newPost.child("favorited").setValue(0);
+                                            newPost.child("userPhoto").setValue(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
+                                            newPost.child("type").setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            });
                                         }
 
                                         @Override
@@ -252,15 +251,12 @@ public class PostActivity extends Base {
 
     }
 
-    // Handle the Activity results.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             uri = data.getData();
             imageButton.setImageURI(uri);
         }
     }
-
 }

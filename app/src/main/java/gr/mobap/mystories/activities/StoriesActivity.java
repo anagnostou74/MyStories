@@ -96,6 +96,7 @@ public class StoriesActivity extends Base {
                 .getReference()
                 .child("stories");
         myRef.keepSynced(true);
+
         Log.d(TAG, String.valueOf(myRef));
         valueEventListener = new ValueEventListener() {
             @Override
@@ -136,7 +137,7 @@ public class StoriesActivity extends Base {
                 //TODO set star image, get favorites and set, get author photo from Firebase db
                 //holder.setStarImage(getApplicationContext(), model.getPhoto());
                 holder.setStar(model.getFavorited());
-                //holder.setUserPhoto(getApplicationContext(), model.getPhoto());
+                holder.setUserPhoto(getApplicationContext(), model.getUserPhoto());
                 holder.setUserName(model.getUser());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -150,6 +151,11 @@ public class StoriesActivity extends Base {
             }
         };
 
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(StoriesActivity.this);
+        mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
+
+        recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
         adapter.startListening();
     }

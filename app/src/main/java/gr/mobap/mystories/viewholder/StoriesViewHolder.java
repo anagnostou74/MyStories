@@ -46,8 +46,8 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
                 .into(star);
     }
 
-    public void setStar(String star) {
-        num_stars.setText(star);
+    public void setStar(Integer star) {
+        num_stars.setText(String.valueOf(star));
     }
 
     public void setUserPhoto(Context ctx, String imageUrl) {
