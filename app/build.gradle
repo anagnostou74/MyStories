@@ -63,7 +63,7 @@ dependencies {
     // Realtime Database
     implementation 'com.google.firebase:firebase-firestore:17.0.3'
     implementation 'com.google.firebase:firebase-database:16.0.1'
-    implementation 'com.firebaseui:firebase-ui-database:4.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:3.3.1' // Not 4.0.1 due to "Program type already present: android.arch.core.util.Function" bug
     // Storage
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     // Tests
