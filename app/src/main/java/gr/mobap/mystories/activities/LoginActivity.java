@@ -51,7 +51,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     @BindView(R.id.disconnect_button)
     Button disconnectButton;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
@@ -64,7 +64,6 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     private MenuItem mLogInTextView;
     private MenuItem mLogOutTextView;
     private MenuItem mPostTextView;
-    FirebaseAuth mFirebaseAuth;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,36 +95,6 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-        if (mFirebaseUser == null) {
-            GlideApp
-                    .with(this)
-                    .load(R.drawable.ic_account)
-                    .apply(RequestOptions.circleCropTransform())
-                    .error(android.R.drawable.sym_def_app_icon)
-                    .centerCrop()
-                    .placeholder(android.R.drawable.sym_def_app_icon)
-                    .into(mDisplayImageView);
-            mNameTextView.setVisibility(View.GONE);
-            mEmailTextView.setVisibility(View.GONE);
-            mPostTextView.setVisible(false);
-            mLogOutTextView.setVisible(false);
-        } else {
-            if (mFirebaseUser.getPhotoUrl() != null) {
-                GlideApp
-                        .with(this)
-                        .load(mFirebaseUser.getPhotoUrl())
-                        .apply(RequestOptions.circleCropTransform())
-                        .error(android.R.drawable.sym_def_app_icon)
-                        .centerCrop()
-                        .placeholder(android.R.drawable.sym_def_app_icon)
-                        .into(mDisplayImageView);
-
-            }
-            mNameTextView.setText(mFirebaseUser.getDisplayName());
-            mEmailTextView.setText(mFirebaseUser.getEmail());
-            mLogInTextView.setVisible(false);
-        }
-
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
         signInButton.setOnClickListener(this);
@@ -141,15 +110,38 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            if (mFirebaseUser == null) {
+                GlideApp
+                        .with(this)
+                        .load(R.drawable.ic_account)
+                        .apply(RequestOptions.circleCropTransform())
+                        .error(android.R.drawable.sym_def_app_icon)
+                        .centerCrop()
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .into(mDisplayImageView);
+                mNameTextView.setVisibility(View.GONE);
+                mEmailTextView.setVisibility(View.GONE);
+                mPostTextView.setVisible(false);
+                mLogOutTextView.setVisible(false);
             } else {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
+                if (mFirebaseUser.getPhotoUrl() != null) {
+                    GlideApp
+                            .with(this)
+                            .load(mFirebaseUser.getPhotoUrl())
+                            .apply(RequestOptions.circleCropTransform())
+                            .error(android.R.drawable.sym_def_app_icon)
+                            .centerCrop()
+                            .placeholder(android.R.drawable.sym_def_app_icon)
+                            .into(mDisplayImageView);
+
+                }
+                mNameTextView.setText(mFirebaseUser.getDisplayName());
+                mEmailTextView.setText(mFirebaseUser.getEmail());
+                mLogInTextView.setVisible(false);
             }
-            updateUI(user);
+
+            updateUI(mFirebaseUser);
         };
     }
 
@@ -171,7 +163,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -179,7 +171,8 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         super.onStop();
         hideProgressDialog();
         if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+            mFirebaseAuth.removeAuthStateListener(mAuthListener);
+
         }
     }
 
@@ -205,7 +198,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         showProgressDialog();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+        mFirebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
             Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
             if (!task.isSuccessful()) {
                 mNameTextView.setText(task.getException().getMessage());
@@ -235,7 +228,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
             alert.setCancelable(false);
             alert.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
                 // Firebase sign out
-                mAuth.signOut();
+                mFirebaseAuth.signOut();
                 // Google sign out
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                         status -> updateUI(null)
@@ -257,7 +250,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
             alert.setCancelable(false);
             alert.setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
                 // Firebase sign out
-                mAuth.signOut();
+                mFirebaseAuth.signOut();
                 // Google revoke access
                 Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
                         status -> updateUI(null)
