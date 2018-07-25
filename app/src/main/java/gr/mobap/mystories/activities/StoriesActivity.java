@@ -102,7 +102,6 @@ public class StoriesActivity extends Base {
                 .child("stories");
         myRef.keepSynced(true);
 
-        Log.d(TAG, String.valueOf(myRef));
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -143,7 +142,7 @@ public class StoriesActivity extends Base {
                 holder.setTitle(model.getTitle());
                 // Determine if the current user has liked this post and set UI accordingly
                 if (user != null) {
-                    if (model.stars.containsKey(getUid())) {
+                    if (model.fav.containsKey(getUid())) {
                         holder.star.setImageResource(R.drawable.ic_favorite_full);
                     } else {
                         holder.star.setImageResource(R.drawable.ic_favorite_empty);
@@ -157,7 +156,7 @@ public class StoriesActivity extends Base {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent detailActivity = new Intent(StoriesActivity.this, DetailActivity.class);
+                        Intent detailActivity = new Intent(StoriesActivity.this, StoriesActivity.class);
                         detailActivity.putExtra("PostID", post_key);
                         startActivity(detailActivity);
                     }
@@ -168,7 +167,10 @@ public class StoriesActivity extends Base {
                     @Override
                     public void onClick(View starView) {
                         DatabaseReference globalPostRef = myRef.child(post_key);
+                        DatabaseReference userPostRef = myRef.child("user-posts").child(user.getUid()).child(post_key);
+
                         onStarClicked(globalPostRef);
+                        onStarClicked(userPostRef);
                     }
                 });
 
@@ -202,14 +204,14 @@ public class StoriesActivity extends Base {
                     if (p == null) {
                         return Transaction.success(mutableData);
                     }
-                    if (p.stars.containsKey(getUid())) {
+                    if (p.fav.containsKey(getUid())) {
                         // Unstar the post and remove self from stars
                         p.favorited = p.favorited - 1;
-                        p.stars.remove(getUid());
+                        p.fav.remove(getUid());
                     } else {
                         // Star the post and add self to stars
                         p.favorited = p.favorited + 1;
-                        p.stars.put(getUid(), true);
+                        p.fav.put(getUid(), true);
                     }
 
                     // Set value and report transaction success

@@ -63,8 +63,6 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(MyStory myStory, View.OnClickListener starClickListener) {
-        titleTv.setText(myStory.title);
-        author.setText(myStory.user);
         num_stars.setText(String.valueOf(myStory.favorited));
         star.setOnClickListener(starClickListener);
     }

@@ -40,6 +40,7 @@ import com.google.firebase.storage.UploadTask;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -202,13 +203,14 @@ public class PostActivity extends Base {
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri;
                                     Uri userPhoto = mFirebaseUser.getPhotoUrl();
-
                                     final DatabaseReference newPost = myRef.push();
                                     //adding post contents to database reference
                                     newPost.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-
+                                            HashMap<String, Boolean> fav = new HashMap<String, Boolean>() {{
+                                                put(mFirebaseUser.getUid(), true);
+                                            }};
 
                                             newPost.child("date").setValue(date);
                                             newPost.child("prologue").setValue(prologue);
@@ -218,7 +220,8 @@ public class PostActivity extends Base {
                                             newPost.child("title").setValue(title);
                                             newPost.child("user").setValue(mFirebaseUser.getDisplayName());
                                             newPost.child("email").setValue(mFirebaseUser.getEmail());
-                                            newPost.child("favorited").setValue(0);
+                                            newPost.child("favorited").setValue(1);
+                                            newPost.child("fav").setValue(fav);
                                             newPost.child("image").setValue(userPhoto.toString());
                                             newPost.child("type").setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override

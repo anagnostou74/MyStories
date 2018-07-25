@@ -48,8 +48,8 @@ public class MyStory implements Serializable, Parcelable {
     public String video;
     @SerializedName("favorited")
     @Expose
-    public Integer favorited;
-    public Map<String, Boolean> stars = new HashMap<>();
+    public Integer favorited = 0;
+    public Map<String, Boolean> fav = new HashMap<>();
 
     public MyStory(Parcel in) {
         this.date = ((String) in.readValue((String.class.getClassLoader())));
@@ -245,6 +245,7 @@ public class MyStory implements Serializable, Parcelable {
         result.put("email", email);
         result.put("video", video);
         result.put("favorited", favorited);
+        result.put("fav", fav);
 
         return result;
     }
