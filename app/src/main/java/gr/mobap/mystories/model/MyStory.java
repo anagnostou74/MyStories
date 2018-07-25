@@ -15,40 +15,41 @@ public class MyStory implements Serializable, Parcelable {
 
     @SerializedName("date")
     @Expose
-    private String date;
+    public String date;
     @SerializedName("prologue")
     @Expose
-    private String prologue;
+    public String prologue;
     @SerializedName("body")
     @Expose
-    private String body;
+    public String body;
     @SerializedName("epilogue")
     @Expose
-    private String epilogue;
+    public String epilogue;
     @SerializedName("photo")
     @Expose
-    private String photo;
+    public String photo;
     @SerializedName("title")
     @Expose
-    private String title;
+    public String title;
     @SerializedName("type")
     @Expose
-    private String type;
+    public String type;
     @SerializedName("user")
     @Expose
-    private String user;
+    public String user;
     @SerializedName("image")
     @Expose
-    private String image;
+    public String image;
     @SerializedName("email")
     @Expose
-    private String email;
+    public String email;
     @SerializedName("video")
     @Expose
-    private String video;
+    public String video;
     @SerializedName("favorited")
     @Expose
-    private Integer favorited;
+    public Integer favorited;
+    public Map<String, Boolean> stars = new HashMap<>();
 
     public MyStory(Parcel in) {
         this.date = ((String) in.readValue((String.class.getClassLoader())));

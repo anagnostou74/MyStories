@@ -14,13 +14,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -132,19 +137,38 @@ public class StoriesActivity extends Base {
             @Override
             protected void onBindViewHolder(StoriesViewHolder holder, int position, MyStory model) {
                 final String post_key = getRef(position).getKey();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
                 holder.setMainImageUrl(getApplicationContext(), model.getPhoto());
                 holder.setTitle(model.getTitle());
-                //TODO set star image, get favorites and set, get author photo from Firebase db
-                //holder.setStarImage(getApplicationContext(), model.getPhoto());
+                // Determine if the current user has liked this post and set UI accordingly
+                if (user != null) {
+                    if (model.stars.containsKey(getUid())) {
+                        holder.star.setImageResource(R.drawable.ic_favorite_full);
+                    } else {
+                        holder.star.setImageResource(R.drawable.ic_favorite_empty);
+                    }
+                } else {
+                    holder.star.setImageResource(R.drawable.ic_favorite_empty);
+                }
                 holder.setStar(model.getFavorited());
                 holder.setUserPhoto(getApplicationContext(), model.getImage());
                 holder.setUserName(model.getUser());
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent singleActivity = new Intent(StoriesActivity.this, StoriesActivity.class);
-                        singleActivity.putExtra("PostID", post_key);
-                        startActivity(singleActivity);
+                        Intent detailActivity = new Intent(StoriesActivity.this, DetailActivity.class);
+                        detailActivity.putExtra("PostID", post_key);
+                        startActivity(detailActivity);
+                    }
+                });
+
+                // Bind Post to ViewHolder, setting OnClickListener for the star button
+                holder.bindToPost(model, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View starView) {
+                        DatabaseReference globalPostRef = myRef.child(post_key);
+                        onStarClicked(globalPostRef);
                     }
                 });
 
@@ -166,5 +190,58 @@ public class StoriesActivity extends Base {
         adapter.stopListening();
         myRef.removeEventListener(valueEventListener);
     }
+
+    // [START post_stars_transaction]
+    private void onStarClicked(DatabaseReference postRef) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            postRef.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    MyStory p = mutableData.getValue(MyStory.class);
+                    if (p == null) {
+                        return Transaction.success(mutableData);
+                    }
+                    if (p.stars.containsKey(getUid())) {
+                        // Unstar the post and remove self from stars
+                        p.favorited = p.favorited - 1;
+                        p.stars.remove(getUid());
+                    } else {
+                        // Star the post and add self to stars
+                        p.favorited = p.favorited + 1;
+                        p.stars.put(getUid(), true);
+                    }
+
+                    // Set value and report transaction success
+                    mutableData.setValue(p);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean b,
+                                       DataSnapshot dataSnapshot) {
+                    // Transaction completed
+                    Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                }
+            });
+        } else {
+            Toast.makeText(StoriesActivity.this, "Please login to vote", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    // [END post_stars_transaction]
+    public String getUid() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        } else {
+            Toast.makeText(StoriesActivity.this, "There is no userId", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+
+    }
+
 
 }

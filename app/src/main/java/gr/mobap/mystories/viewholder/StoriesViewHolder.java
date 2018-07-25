@@ -10,21 +10,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.model.MyStory;
 import gr.mobap.mystories.utilities.GlideApp;
 
 public class StoriesViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.iv_main_pic)
-    ImageView iv_main_pic;
+    public ImageView iv_main_pic;
     @BindView(R.id.title)
-    TextView titleTv;
+    public TextView titleTv;
     @BindView(R.id.star)
-    ImageView star;
+    public ImageView star;
     @BindView(R.id.num_stars)
-    TextView num_stars;
+    public TextView num_stars;
     @BindView(R.id.user_photo)
-    CircleImageView user_photo;
+    public CircleImageView user_photo;
     @BindView(R.id.author)
-    TextView author;
+    public TextView author;
 
     public StoriesViewHolder(View itemView) {
         super(itemView);
@@ -59,5 +60,12 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
 
     public void setUserName(String userName) {
         author.setText(userName);
+    }
+
+    public void bindToPost(MyStory myStory, View.OnClickListener starClickListener) {
+        titleTv.setText(myStory.title);
+        author.setText(myStory.user);
+        num_stars.setText(String.valueOf(myStory.favorited));
+        star.setOnClickListener(starClickListener);
     }
 }
