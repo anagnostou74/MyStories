@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import butterknife.ButterKnife;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
 import gr.mobap.mystories.model.MyStory;
+import gr.mobap.mystories.utilities.GlideApp;
 
 public class DetailActivity extends Base {
 
@@ -55,6 +57,8 @@ public class DetailActivity extends Base {
     TextView info_user_tv;
     @BindView(R.id.info_email_tv)
     TextView info_email_tv;
+    @BindView(R.id.user_photo)
+    ImageView user_photo_iv;
 
     DatabaseReference myRef;
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -112,6 +116,9 @@ public class DetailActivity extends Base {
                 info_favorited_tv.setText(String.valueOf(myStory.favorited));
                 info_user_tv.setText(myStory.user);
                 info_email_tv.setText(myStory.email);
+                GlideApp.with(getApplicationContext())
+                        .load(myStory.image)
+                        .into(user_photo_iv);
                 // [END_EXCLUDE]
             }
 
