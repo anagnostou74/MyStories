@@ -62,5 +62,8 @@
     <string name="thriller">Thriller</string>
 
     <string name="lorem">Lorem ipsum dolor </string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
