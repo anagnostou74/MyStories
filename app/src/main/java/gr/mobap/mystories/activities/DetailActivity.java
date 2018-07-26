@@ -1,30 +1,32 @@
 package gr.mobap.mystories.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.model.MyStory;
 
 public class DetailActivity extends Base {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
@@ -54,22 +56,21 @@ public class DetailActivity extends Base {
     @BindView(R.id.info_email_tv)
     TextView info_email_tv;
 
-    FirebaseRecyclerAdapter adapter;
     DatabaseReference myRef;
     private static final String TAG = DetailActivity.class.getSimpleName();
     ValueEventListener valueEventListener;
+    private ValueEventListener mPostListener;
+    private String mPostKey;
+    public static final String EXTRA_POST_KEY = "post_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stories);
+        setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
-
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -79,6 +80,66 @@ public class DetailActivity extends Base {
         navigationView.setNavigationItemSelectedListener(this);
         userProfile();
 
+        // Get post key from intent
+        mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
+        if (mPostKey == null) {
+            throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
+        }
+
+        // Initialize Database
+        myRef = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("stories")
+                .child(mPostKey);
+        myRef.keepSynced(true);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                MyStory myStory = dataSnapshot.getValue(MyStory.class);
+                // [START_EXCLUDE]
+                prologue_tv.setText(myStory.prologue);
+                body_tv.setText(myStory.body);
+                epilogue_tv.setText(myStory.epilogue);
+                info_date_tv.setText(myStory.date);
+                info_favorited_tv.setText(String.valueOf(myStory.favorited));
+                info_user_tv.setText(myStory.user);
+                info_email_tv.setText(myStory.email);
+                // [END_EXCLUDE]
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // [START_EXCLUDE]
+                Toast.makeText(DetailActivity.this, "Failed to load post.",
+                        Toast.LENGTH_SHORT).show();
+                // [END_EXCLUDE]
+            }
+        };
+        myRef.addValueEventListener(valueEventListener);
+        // [END post_value_event_listener]
+
+        // Keep copy of post listener so we can remove it when app stops
+        mPostListener = valueEventListener;
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // Remove post value event listener
+        if (mPostListener != null) {
+            myRef.removeEventListener(mPostListener);
+        }
 
     }
 

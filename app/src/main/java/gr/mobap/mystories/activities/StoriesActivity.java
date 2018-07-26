@@ -156,8 +156,9 @@ public class StoriesActivity extends Base {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent detailActivity = new Intent(StoriesActivity.this, StoriesActivity.class);
-                        detailActivity.putExtra("PostID", post_key);
+                        // Launch DetailActivity
+                        Intent detailActivity = new Intent(StoriesActivity.this, DetailActivity.class);
+                        detailActivity.putExtra(DetailActivity.EXTRA_POST_KEY, post_key);
                         startActivity(detailActivity);
                     }
                 });
@@ -194,7 +195,7 @@ public class StoriesActivity extends Base {
     }
 
     // [START post_stars_transaction]
-    private void onStarClicked(DatabaseReference postRef) {
+    public void onStarClicked(DatabaseReference postRef) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             postRef.runTransaction(new Transaction.Handler() {
