@@ -43,6 +43,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PostActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.DetailActivity"
