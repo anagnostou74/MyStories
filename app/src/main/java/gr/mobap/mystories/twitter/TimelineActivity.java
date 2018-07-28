@@ -1,8 +1,9 @@
 package gr.mobap.mystories.twitter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -46,6 +47,12 @@ public class TimelineActivity extends Base {
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+    @BindView(android.R.id.list)
+    ListView listView;
+    @BindView(android.R.id.empty)
+    View emptyView;
+    @BindView(R.id.swipe_layout)
+    SwipeRefreshLayout swipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +63,65 @@ public class TimelineActivity extends Base {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        Uri data = intent.getData();
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+        userProfile();
 
         AndroidNetworkUtility androidNetworkUtility = new AndroidNetworkUtility();
         if (androidNetworkUtility.isConnected(this)) {
+            new FetchTweets().execute();
+        } else {
+            // display error
+            Toast.makeText(this, getString(R.string.no_network),
+                    Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> {
+                Intent i = new Intent(TimelineActivity.this, StoriesActivity.class);
+                startActivity(i);
+                // close this activity
+                finish();
+            }, 1000); // wait for 1 second
+        }
+
+        listView.setEmptyView(emptyView);
+        // set custom scroll listener to enable swipe refresh layout only when at list top
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            boolean enableRefresh = false;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                 int totalItemCount) {
+                if (listView.getChildCount() > 0) {
+                    // check that the first item is visible and that its top matches the parent
+                    enableRefresh = listView.getFirstVisiblePosition() == 0 &&
+                            listView.getChildAt(0).getTop() >= 0;
+                } else {
+                    enableRefresh = false;
+                }
+                swipeLayout.setEnabled(enableRefresh);
+            }
+        });
+
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private class FetchTweets extends AsyncTask<Void, Void, TweetTimelineListAdapter> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected TweetTimelineListAdapter doInBackground(Void... params) {
             // launch the app login activity when a guest user tries to favorite a Tweet
             final Callback<Tweet> actionCallback = new Callback<Tweet>() {
                 @Override
@@ -83,46 +136,23 @@ public class TimelineActivity extends Base {
                     }
                 }
             };
-
-            final SwipeRefreshLayout swipeLayout = findViewById(R.id.swipe_layout);
-            final View emptyView = findViewById(android.R.id.empty);
-            final ListView listView = findViewById(android.R.id.list);
-            listView.setEmptyView(emptyView);
-
             // Collection "Vouli from user anagnostou74"
             TwitterListTimeline timeline = new TwitterListTimeline.Builder()
                     .slugWithOwnerScreenName("Funny", "mobap_gr")
                     .build();
-            TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(this)
+
+            return new TweetTimelineListAdapter.Builder(getApplication())
                     .setTimeline(timeline)
                     .setViewStyle(R.style.tw__TweetLightWithActionsStyle)
                     .setOnActionCallback(actionCallback)
                     .build();
+        }
+
+        @Override
+        protected void onPostExecute(TweetTimelineListAdapter adapter) {
+            super.onPostExecute(adapter);
             listView.setAdapter(adapter);
-
             swipeLayout.setColorSchemeResources(R.color.twitter_blue, R.color.twitter_dark);
-
-            // set custom scroll listener to enable swipe refresh layout only when at list top
-            listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-                boolean enableRefresh = false;
-
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-                }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                                     int totalItemCount) {
-                    if (listView != null && listView.getChildCount() > 0) {
-                        // check that the first item is visible and that its top matches the parent
-                        enableRefresh = listView.getFirstVisiblePosition() == 0 &&
-                                listView.getChildAt(0).getTop() >= 0;
-                    } else {
-                        enableRefresh = false;
-                    }
-                    swipeLayout.setEnabled(enableRefresh);
-                }
-            });
 
             // specify action to take on swipe refresh
             swipeLayout.setOnRefreshListener(() -> {
@@ -138,24 +168,12 @@ public class TimelineActivity extends Base {
                         swipeLayout.setRefreshing(false);
                         final Activity activity = activityRef.get();
                         if (activity != null && !activity.isFinishing()) {
-                            Toast.makeText(activity, exception.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, exception.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             });
-        } else {
-            // display error
-            Toast.makeText(this, getString(R.string.no_network),
-                    Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> {
-                Intent i = new Intent(TimelineActivity.this, StoriesActivity.class);
-                startActivity(i);
-                // close this activity
-                finish();
-            }, 1000); // wait for 1 second
-        }
 
-        userProfile();
+        }
     }
 }
