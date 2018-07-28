@@ -36,7 +36,7 @@ import gr.mobap.mystories.utilities.AndroidNetworkUtility;
 
 
 /**
- * TimelineActivity shows a full screen timeline which is useful for screenshots.
+ * TimelineActivity shows a timeline from a list with funny and interesting tweets.
  */
 public class TimelineActivity extends Base {
 
