@@ -1,7 +1,11 @@
 package gr.mobap.mystories.activities;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -27,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +42,10 @@ import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
 import gr.mobap.mystories.model.MyStory;
 import gr.mobap.mystories.viewholder.StoriesViewHolder;
+import gr.mobap.mystories.widget.MyStoriesWidget;
 
 public class StoriesActivity extends Base {
+    public static String WIDGET_MESSAGES_SHAREDPREF = "widget_messages_list";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -79,6 +86,13 @@ public class StoriesActivity extends Base {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
+        Intent intent = new Intent(this, MyStoriesWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
+        int[] ids = widgetManager.getAppWidgetIds(new ComponentName(this, MyStoriesWidget.class));
+        widgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, ids);
+        sendBroadcast(intent);
     }
 
     @Override
@@ -111,6 +125,13 @@ public class StoriesActivity extends Base {
                     list.add(myStory);
                 }
                 Log.d(TAG, list.toString()); //To see is not empty
+
+                Gson gson = new Gson();
+                String jsonMessages = gson.toJson(list);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(WIDGET_MESSAGES_SHAREDPREF, jsonMessages);
+                editor.apply();
             }
 
             @Override

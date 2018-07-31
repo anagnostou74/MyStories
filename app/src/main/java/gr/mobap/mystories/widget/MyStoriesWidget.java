@@ -1,44 +1,54 @@
 package gr.mobap.mystories.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import gr.mobap.mystories.R;
+import gr.mobap.mystories.activities.StoriesActivity;
 
-/**
- * Implementation of App Widget functionality.
- * App Widget Configuration implemented in {@link MyStoriesWidgetConfigureActivity MyStoriesWidgetConfigureActivity}
- */
+
 public class MyStoriesWidget extends AppWidgetProvider {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
+        ComponentName componentName = new ComponentName(context.getApplicationContext(), MyStoriesWidget.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
+        onUpdate(context, appWidgetManager, appWidgetIds);
 
-        CharSequence widgetText = MyStoriesWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_stories_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
+            Intent intent = new Intent(context, ListWidgetServices.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        // When the user deletes the widget, delete the preference associated with it.
-        for (int appWidgetId : appWidgetIds) {
-            MyStoriesWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_stories_widget);
+            views.setRemoteAdapter(R.id.widget_list, intent);
+
+            Intent templateIntent = new Intent(context, StoriesActivity.class);
+            templateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            PendingIntent templatePendingIntent = PendingIntent.getActivity(context, 0, templateIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list, templatePendingIntent);
+            views.setOnClickPendingIntent(R.id.widget_img_launcher, templatePendingIntent);
+            views.setOnClickPendingIntent(R.id.appwidget_text, templatePendingIntent);
+
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
         }
+
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
