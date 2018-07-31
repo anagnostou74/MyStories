@@ -8,7 +8,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -90,6 +93,14 @@ public class PostActivity extends Base {
     CircleImageView authorImageView;
     @BindView(R.id.btnPost)
     Button btnPost;
+    @BindView(R.id.titleNo)
+    TextView titleNo;
+    @BindView(R.id.prologueNo)
+    TextView prologueNo;
+    @BindView(R.id.bodyNo)
+    TextView bodyNo;
+    @BindView(R.id.epilogueNo)
+    TextView epilogueNo;
 
     private static final String TAG = PostActivity.class.getSimpleName();
     private static final int GALLERY_REQUEST_CODE = 100;
@@ -100,6 +111,9 @@ public class PostActivity extends Base {
     String type;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
+    int MIN_WORDS = 40;
+    int MAX_WORDS = 320;
+    int MAX_WORDS_TITLE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +169,101 @@ public class PostActivity extends Base {
                 startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), GALLERY_REQUEST_CODE);
             }
         });
+
+        getTitle.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int wordsLength = countWords(s.toString());// words.length;
+                // count == 0 means a new word is going to start
+                if (count == 0 && wordsLength >= MAX_WORDS_TITLE) {
+                    setCharLimit(getTitle, getTitle.getText().length());
+                } else {
+                    removeFilter(getTitle);
+                }
+
+                titleNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS_TITLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        getPrologue.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int wordsLength = countWords(s.toString());// words.length;
+                // count == 0 means a new word is going to start
+                if (count == 0 && wordsLength >= MAX_WORDS) {
+                    setCharLimit(getPrologue, getPrologue.getText().length());
+                } else {
+                    removeFilter(getPrologue);
+                }
+
+                prologueNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        getBody.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int wordsLength = countWords(s.toString());// words.length;
+                // count == 0 means a new word is going to start
+                if (count == 0 && wordsLength >= MAX_WORDS) {
+                    setCharLimit(getBody, getBody.getText().length());
+                } else {
+                    removeFilter(getBody);
+                }
+
+                bodyNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        getEpilogue.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int wordsLength = countWords(s.toString());// words.length;
+                // count == 0 means a new word is going to start
+                if (count == 0 && wordsLength >= MAX_WORDS) {
+                    setCharLimit(getEpilogue, getEpilogue.getText().length());
+                } else {
+                    removeFilter(getEpilogue);
+                }
+
+                epilogueNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
         // posting to Firebase
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,6 +368,27 @@ public class PostActivity extends Base {
         if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             uri = data.getData();
             imageButton.setImageURI(uri);
+        }
+    }
+
+    private int countWords(String s) {
+        String trim = s.trim();
+        if (trim.isEmpty())
+            return 0;
+        return trim.split("\\s+").length; // separate string around spaces
+    }
+
+    private InputFilter filter;
+
+    private void setCharLimit(EditText et, int max) {
+        filter = new InputFilter.LengthFilter(max);
+        et.setFilters(new InputFilter[]{filter});
+    }
+
+    private void removeFilter(EditText et) {
+        if (filter != null) {
+            et.setFilters(new InputFilter[0]);
+            filter = null;
         }
     }
 }
