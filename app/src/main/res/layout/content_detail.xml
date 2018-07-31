@@ -40,6 +40,7 @@
                 style="@style/SimpleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
                 android:text="@string/lorem" />
         </android.support.v7.widget.CardView>
 
@@ -81,6 +82,7 @@
                 style="@style/SimpleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
                 android:text="@string/lorem" />
         </android.support.v7.widget.CardView>
 
@@ -121,6 +123,7 @@
                 style="@style/SimpleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
                 android:text="@string/lorem" />
         </android.support.v7.widget.CardView>
 
@@ -169,7 +172,7 @@
                     style="@style/SimpleText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="13dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
@@ -177,8 +180,8 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/date"
                     app:layout_constraintBottom_toTopOf="@+id/info_user_tv"
-                    app:layout_constraintHorizontal_bias="0.4"
                     app:layout_constraintEnd_toStartOf="@+id/info_favorited_tv"
+                    app:layout_constraintHorizontal_bias="0.4"
                     app:layout_constraintStart_toEndOf="@+id/user_photo"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -194,12 +197,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:drawableLeft="@drawable/ic_favorite_full"
-                    android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_favorite_full"
                     android:text="@string/favorited"
                     app:layout_constraintBottom_toTopOf="@+id/info_user_tv"
-                    app:layout_constraintHorizontal_bias="0.3"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.3"
                     app:layout_constraintStart_toEndOf="@+id/info_date_tv"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -216,8 +218,8 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/user"
                     app:layout_constraintBottom_toTopOf="@+id/info_email_tv"
-                    app:layout_constraintHorizontal_bias="0.7"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.7"
                     app:layout_constraintStart_toEndOf="@+id/user_photo"
                     app:layout_constraintTop_toBottomOf="@+id/info_date_tv" />
 

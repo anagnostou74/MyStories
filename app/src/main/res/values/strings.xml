@@ -66,6 +66,8 @@
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
 
-    <string name="push">Can\'t you do more than that?</string>
+    <string name="push">You can do more than that!</string>
+    <string name="numbers">000/450</string>
+    <string name="put_image">Insert an image</string>
 
 </resources>

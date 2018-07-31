@@ -34,6 +34,9 @@ public class DetailActivity extends Base {
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    @BindView(R.id.activity_detail_image)
+    ImageView activity_detail_image;
+
     @BindView(R.id.prologue_card)
     CardView prologue_card;
     @BindView(R.id.body_card)
@@ -109,6 +112,10 @@ public class DetailActivity extends Base {
                 // Get Post object and use the values to update the UI
                 MyStory myStory = dataSnapshot.getValue(MyStory.class);
                 // [START_EXCLUDE]
+                GlideApp.with(getApplicationContext())
+                        .load(myStory.photo)
+                        .fitCenter()
+                        .into(activity_detail_image);
                 prologue_tv.setText(myStory.prologue);
                 body_tv.setText(myStory.body);
                 epilogue_tv.setText(myStory.epilogue);

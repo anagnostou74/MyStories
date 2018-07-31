@@ -24,6 +24,7 @@
 
         <EditText
             android:id="@+id/getTitle"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -32,8 +33,12 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:hint="@string/title"
             android:inputType="text"
+            android:textColor="@color/lightBrown"
+            android:textColorHint="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getPrologue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,8 +46,11 @@
 
         <TextView
             android:id="@+id/titleNo"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/numbers"
+            android:textColor="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getPrologue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +58,7 @@
 
         <EditText
             android:id="@+id/getPrologue"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -57,6 +66,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="top|start"
             android:hint="@string/prologue"
             android:inputType="textMultiLine"
@@ -64,6 +75,8 @@
             android:maxLines="7"
             android:scrollHorizontally="false"
             android:scrollbars="vertical"
+            android:textColor="@color/lightBrown"
+            android:textColorHint="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getBody"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,8 +84,11 @@
 
         <TextView
             android:id="@+id/prologueNo"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/numbers"
+            android:textColor="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getBody"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,6 +96,7 @@
 
         <EditText
             android:id="@+id/getBody"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -87,6 +104,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="top|start"
             android:hint="@string/body"
             android:inputType="textMultiLine"
@@ -94,6 +113,8 @@
             android:maxLines="14"
             android:scrollHorizontally="false"
             android:scrollbars="vertical"
+            android:textColor="@color/lightBrown"
+            android:textColorHint="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getEpilogue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,8 +122,11 @@
 
         <TextView
             android:id="@+id/bodyNo"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/numbers"
+            android:textColor="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getEpilogue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,6 +134,7 @@
 
         <EditText
             android:id="@+id/getEpilogue"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -117,6 +142,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="top|start"
             android:hint="@string/epilogue"
             android:inputType="textMultiLine"
@@ -124,6 +151,8 @@
             android:maxLines="7"
             android:scrollHorizontally="false"
             android:scrollbars="vertical"
+            android:textColor="@color/lightBrown"
+            android:textColorHint="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -131,8 +160,11 @@
 
         <TextView
             android:id="@+id/epilogueNo"
+            style="@style/SimpleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/numbers"
+            android:textColor="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/getType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -149,39 +181,51 @@
 
             <RadioButton
                 android:id="@+id/adventure"
+                style="@style/SimpleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/adventure" />
+                android:text="@string/adventure"
+                android:textColor="@color/lightBrown" />
 
             <RadioButton
                 android:id="@+id/comedy"
+                style="@style/SimpleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/comedy" />
+                android:text="@string/comedy"
+                android:textColor="@color/lightBrown" />
 
             <RadioButton
                 android:id="@+id/fairy"
+                style="@style/SimpleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fairy" />
+                android:text="@string/fairy"
+                android:textColor="@color/lightBrown" />
 
             <RadioButton
                 android:id="@+id/fiction"
+                style="@style/SimpleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fiction" />
+                android:text="@string/fiction"
+                android:textColor="@color/lightBrown" />
 
             <RadioButton
                 android:id="@+id/romance"
+                style="@style/SimpleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/romance" />
+                android:text="@string/romance"
+                android:textColor="@color/lightBrown" />
 
             <RadioButton
                 android:id="@+id/thriller"
+                style="@style/SimpleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/thriller" />
+                android:text="@string/thriller"
+                android:textColor="@color/lightBrown" />
         </RadioGroup>
 
 
@@ -191,6 +235,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:background="@drawable/ic_add_a_photo_24dp"
+            android:contentDescription="@string/put_image"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/getDate"
             app:layout_constraintEnd_toEndOf="parent"
@@ -209,6 +254,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/date"
+            android:textColor="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/authorImageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -224,6 +270,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/user"
+            android:textColor="@color/lightBrown"
             app:layout_constraintBottom_toTopOf="@+id/btnPost"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

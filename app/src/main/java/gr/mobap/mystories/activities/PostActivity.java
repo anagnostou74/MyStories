@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -111,7 +110,8 @@ public class PostActivity extends Base {
     String type;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
-    int MIN_WORDS = 40;
+    int MIN_CHAR_TITLE = 5;
+    int MIN_CHAR = 40;
     int MAX_WORDS = 320;
     int MAX_WORDS_TITLE = 10;
 
@@ -128,6 +128,7 @@ public class PostActivity extends Base {
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        getType.check(R.id.adventure); // radiogroup should always has a value
 
         navigationView.setNavigationItemSelectedListener(this);
         userProfile();
@@ -137,11 +138,9 @@ public class PostActivity extends Base {
         myRef = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("stories");
-        Log.d(TAG + "myRef: ", String.valueOf(myRef)); //To see is not empty
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        //mAuthor = myRef.child(mFirebaseUser.getUid());
 
         DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
         final String date = df.format(Calendar.getInstance().getTime());
@@ -170,16 +169,26 @@ public class PostActivity extends Base {
             }
         });
 
+        getTitle.setFocusable(true);
+        getPrologue.setFocusable(true);
+        getBody.setFocusable(true);
+        getEpilogue.setFocusable(true);
+
+        getTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (getTitle.getText().toString().trim().length() < MIN_CHAR_TITLE) {
+                        getTitle.setError(getString(R.string.push));
+                    }
+                }
+            }
+        });
         getTitle.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                int wordsLength = countWords(s.toString());// words.length;
-                // count == 0 means a new word is going to start
+                int wordsLength = countWords(s.toString());
                 if (count == 0 && wordsLength >= MAX_WORDS_TITLE) {
                     setCharLimit(getTitle, getTitle.getText().length());
                 } else {
@@ -190,19 +199,31 @@ public class PostActivity extends Base {
             }
 
             @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
             public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        getPrologue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (getPrologue.getText().toString().trim().length() < MIN_CHAR) {
+                        getPrologue.setError(getString(R.string.push));
+                    }
+                }
             }
         });
         getPrologue.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+                int wordsLength = countWords(s.toString());
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                int wordsLength = countWords(s.toString());// words.length;
-                // count == 0 means a new word is going to start
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getPrologue, getPrologue.getText().length());
                 } else {
@@ -213,19 +234,31 @@ public class PostActivity extends Base {
             }
 
             @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+
+        getBody.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (getBody.getText().toString().trim().length() < MIN_CHAR) {
+                        getBody.setError(getString(R.string.push));
+                    }
+                }
             }
         });
         getBody.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+                int wordsLength = countWords(s.toString());
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                int wordsLength = countWords(s.toString());// words.length;
-                // count == 0 means a new word is going to start
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getBody, getBody.getText().length());
                 } else {
@@ -236,19 +269,30 @@ public class PostActivity extends Base {
             }
 
             @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+        getEpilogue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (getEpilogue.getText().toString().trim().length() < MIN_CHAR) {
+                        getEpilogue.setError(getString(R.string.push));
+                    }
+                }
             }
         });
         getEpilogue.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+                int wordsLength = countWords(s.toString());
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                int wordsLength = countWords(s.toString());// words.length;
-                // count == 0 means a new word is going to start
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getEpilogue, getEpilogue.getText().length());
                 } else {
@@ -259,10 +303,14 @@ public class PostActivity extends Base {
             }
 
             @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
             public void afterTextChanged(Editable s) {
             }
         });
-
 
         // posting to Firebase
         btnPost.setOnClickListener(new View.OnClickListener() {
@@ -391,4 +439,5 @@ public class PostActivity extends Base {
             filter = null;
         }
     }
+
 }
