@@ -47,7 +47,6 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
@@ -383,6 +382,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
         });
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
