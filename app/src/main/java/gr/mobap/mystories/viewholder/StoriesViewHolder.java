@@ -33,8 +33,10 @@ public class StoriesViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setMainImageUrl(Context ctx, String imageUrl) {
+
         GlideApp.with(ctx)
                 .load(imageUrl)
+                .fitCenter()
                 .into(iv_main_pic);
     }
 

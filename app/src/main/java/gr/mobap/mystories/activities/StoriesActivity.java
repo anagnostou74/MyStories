@@ -72,6 +72,7 @@ public class StoriesActivity extends Base {
     Parcelable mListState;
     int recyclerViewPosition;
     private static Bundle mBundleRecyclerViewState;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +83,19 @@ public class StoriesActivity extends Base {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+
+        fab.setOnClickListener(view -> {
+            if (mFirebaseUser != null) {
+                Intent i = new Intent(StoriesActivity.this, PostActivity.class);
+                startActivity(i);
+            } else {
+                Intent i = new Intent(StoriesActivity.this, LoginActivity.class);
+                Snackbar.make(view, "Sign in to post your story", Snackbar.LENGTH_LONG).show();
+                startActivity(i);
+            }
+        });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

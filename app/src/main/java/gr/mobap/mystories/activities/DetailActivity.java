@@ -1,6 +1,9 @@
 package gr.mobap.mystories.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -33,6 +36,10 @@ public class DetailActivity extends Base {
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @BindView(R.id.activity_detail_image)
     ImageView activity_detail_image;
@@ -77,7 +84,6 @@ public class DetailActivity extends Base {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -89,9 +95,6 @@ public class DetailActivity extends Base {
 
         // Get post key from intent
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
-        if (mPostKey == null) {
-            throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
-        }
 
         // Initialize Database
         myRef = FirebaseDatabase.getInstance()
@@ -99,12 +102,6 @@ public class DetailActivity extends Base {
                 .child("stories")
                 .child(mPostKey);
         myRef.keepSynced(true);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -116,6 +113,7 @@ public class DetailActivity extends Base {
                         .load(myStory.photo)
                         .fitCenter()
                         .into(activity_detail_image);
+                collapsingToolbarLayout.setTitle(myStory.title);
                 prologue_tv.setText(myStory.prologue);
                 body_tv.setText(myStory.body);
                 epilogue_tv.setText(myStory.epilogue);
@@ -127,6 +125,10 @@ public class DetailActivity extends Base {
                         .load(myStory.image)
                         .into(user_photo_iv);
                 // [END_EXCLUDE]
+
+                fab.setOnClickListener(view -> {
+                    shareSocial(myStory.prologue, "I am reading '" + myStory.title + "' from " + getString(R.string.app_name), Uri.parse(myStory.image));
+                });
             }
 
             @Override
@@ -139,6 +141,13 @@ public class DetailActivity extends Base {
                 // [END_EXCLUDE]
             }
         };
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         myRef.addValueEventListener(valueEventListener);
         // [END post_value_event_listener]
 

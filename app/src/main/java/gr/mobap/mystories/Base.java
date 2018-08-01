@@ -1,6 +1,9 @@
 package gr.mobap.mystories;
 
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +16,9 @@ import android.widget.TextView;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -136,6 +142,40 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
             mLogInTextView.setVisible(false);
         }
 
+    }
+
+    public void shareSocial(CharSequence text, CharSequence subject, Uri imageUri) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("image/png");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject.toString());
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        //startActivity(Intent.createChooser(intent, "Κοινοποίηση εφαρμογής"));
+
+        // get available share intents
+        List<Intent> targets = new ArrayList<>();
+        Intent template = new Intent(Intent.ACTION_SEND);
+        template.setType("text/plain");
+        List<ResolveInfo> candidates = this.getPackageManager().
+                queryIntentActivities(template, 0);
+
+        // remove facebook
+        for (ResolveInfo candidate : candidates) {
+            String packageName = candidate.activityInfo.packageName;
+            if (!packageName.equals("com.facebook.katana")) {
+                Intent target = new Intent(android.content.Intent.ACTION_SEND);
+                target.setType("text/plain");
+                target.putExtra(Intent.EXTRA_TEXT, text);
+                target.putExtra(Intent.EXTRA_SUBJECT, subject);
+                target.setPackage(packageName);
+                targets.add(target);
+            }
+        }
+        Intent chooser = Intent.createChooser(targets.remove(0), "Κοινοποίηση εφαρμογής");
+        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targets.toArray(new Parcelable[]{}));
+        startActivity(chooser);
     }
 
 }
