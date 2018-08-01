@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,12 +47,13 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
 import gr.mobap.mystories.utilities.GlideApp;
 
-public class PostActivity extends Base {
+public class PostActivity extends Base implements View.OnFocusChangeListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -174,20 +176,17 @@ public class PostActivity extends Base {
         getBody.setFocusable(true);
         getEpilogue.setFocusable(true);
 
-        getTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    if (getTitle.getText().toString().trim().length() < MIN_CHAR_TITLE) {
-                        getTitle.setError(getString(R.string.push));
-                    }
-                }
-            }
-        });
+        getTitle.clearFocus();
+        getPrologue.clearFocus();
+        getBody.clearFocus();
+        getEpilogue.clearFocus();
+
         getTitle.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                setOnFocusChangeListener(getTitle);
+
                 int wordsLength = countWords(s.toString());
                 if (count == 0 && wordsLength >= MAX_WORDS_TITLE) {
                     setCharLimit(getTitle, getTitle.getText().length());
@@ -208,20 +207,12 @@ public class PostActivity extends Base {
             }
         });
 
-        getPrologue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    if (getPrologue.getText().toString().trim().length() < MIN_CHAR) {
-                        getPrologue.setError(getString(R.string.push));
-                    }
-                }
-            }
-        });
         getPrologue.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                setOnFocusChangeListener(getPrologue);
+
                 int wordsLength = countWords(s.toString());
 
                 if (count == 0 && wordsLength >= MAX_WORDS) {
@@ -243,21 +234,12 @@ public class PostActivity extends Base {
             }
         });
 
-        getBody.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    if (getBody.getText().toString().trim().length() < MIN_CHAR) {
-                        getBody.setError(getString(R.string.push));
-                    }
-                }
-            }
-        });
         getBody.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 int wordsLength = countWords(s.toString());
+                setOnFocusChangeListener(getBody);
 
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getBody, getBody.getText().length());
@@ -277,22 +259,14 @@ public class PostActivity extends Base {
             public void afterTextChanged(Editable s) {
             }
         });
-        getEpilogue.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    if (getEpilogue.getText().toString().trim().length() < MIN_CHAR) {
-                        getEpilogue.setError(getString(R.string.push));
-                    }
-                }
-            }
-        });
+
         getEpilogue.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int wordsLength = countWords(s.toString());
+                setOnFocusChangeListener(getEpilogue);
 
+                int wordsLength = countWords(s.toString());
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getEpilogue, getEpilogue.getText().length());
                 } else {
@@ -338,17 +312,17 @@ public class PostActivity extends Base {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            System.out.println("Upload is " + progress + "% done");
+                            Toast.makeText(PostActivity.this, "Upload is " + progress + "% done", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                            System.out.println("Upload is paused");
+                            Toast.makeText(PostActivity.this, "Upload is paused", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
+                            Toast.makeText(PostActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
@@ -386,6 +360,7 @@ public class PostActivity extends Base {
                                                     if (task.isSuccessful()) {
                                                         Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
                                                         startActivity(intent);
+                                                        Toast.makeText(PostActivity.this, "Upload completed", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
@@ -407,9 +382,7 @@ public class PostActivity extends Base {
             }
         });
 
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -440,4 +413,25 @@ public class PostActivity extends Base {
         }
     }
 
+    private void setOnFocusChangeListener(EditText editText) {
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (editText.getText().toString().trim().length() < MIN_CHAR) {
+                        editText.setError(getString(R.string.push));
+                    }
+                }
+            }
+
+        });
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        setOnFocusChangeListener(getTitle);
+        setOnFocusChangeListener(getPrologue);
+        setOnFocusChangeListener(getBody);
+        setOnFocusChangeListener(getEpilogue);
+
+    }
 }
