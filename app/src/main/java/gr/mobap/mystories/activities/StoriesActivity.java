@@ -4,7 +4,10 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -44,6 +47,8 @@ import gr.mobap.mystories.model.MyStory;
 import gr.mobap.mystories.viewholder.StoriesViewHolder;
 import gr.mobap.mystories.widget.MyStoriesWidget;
 
+
+// Save state: https://stackoverflow.com/questions/42514011/how-to-retain-recyclerviews-position-after-orientation-change-while-using-fire
 public class StoriesActivity extends Base {
     public static String WIDGET_MESSAGES_SHAREDPREF = "widget_messages_list";
 
@@ -62,6 +67,11 @@ public class StoriesActivity extends Base {
     DatabaseReference myRef;
     private static final String TAG = StoriesActivity.class.getSimpleName();
     ValueEventListener valueEventListener;
+    LinearLayoutManager mLayoutManager;
+    String LIST_STATE_KEY = "list_state_key";
+    Parcelable mListState;
+    int recyclerViewPosition;
+    private static Bundle mBundleRecyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +93,6 @@ public class StoriesActivity extends Base {
         navigationView.setNavigationItemSelectedListener(this);
         userProfile();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-
         Intent intent = new Intent(this, MyStoriesWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
@@ -93,24 +100,7 @@ public class StoriesActivity extends Base {
         widgetManager.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, ids);
         sendBroadcast(intent);
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        myRef.removeEventListener(valueEventListener);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        myRef.addListenerForSingleValueEvent(valueEventListener);
-        myRef.addValueEventListener(valueEventListener);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         myRef = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("stories");
@@ -199,20 +189,18 @@ public class StoriesActivity extends Base {
             }
         };
 
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(StoriesActivity.this);
+        if (savedInstanceState != null) {
+            recyclerViewPosition = savedInstanceState.getInt(LIST_STATE_KEY);
+        }
+
+        mLayoutManager = new LinearLayoutManager(StoriesActivity.this);
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.startListening();
-    }
+        recyclerView.scrollToPosition(recyclerViewPosition);
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-        myRef.removeEventListener(valueEventListener);
     }
 
     // [START post_stars_transaction]
@@ -267,5 +255,65 @@ public class StoriesActivity extends Base {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        myRef.addListenerForSingleValueEvent(valueEventListener);
+        myRef.addValueEventListener(valueEventListener);
 
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+        recyclerView.setLayoutManager(mLayoutManager);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRef.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+        myRef.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mBundleRecyclerViewState = new Bundle();
+        mListState = recyclerView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mBundleRecyclerViewState != null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mListState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+
+                }
+            }, 50);
+        }
+        recyclerView.setLayoutManager(mLayoutManager);
+    }
 }
