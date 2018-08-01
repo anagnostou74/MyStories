@@ -69,5 +69,6 @@
     <string name="push">You can do more than that!</string>
     <string name="numbers">000/450</string>
     <string name="put_image">Insert an image</string>
+    <string name="email_user">Author email</string>
 
 </resources>

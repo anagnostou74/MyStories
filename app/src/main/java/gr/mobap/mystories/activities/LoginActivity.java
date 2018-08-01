@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,8 +49,14 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
 
     @BindView(R.id.sign_out_button)
     Button signOutButton;
+    @BindView(R.id.imageViewUser)
+    ImageView imageViewUser;
     @BindView(R.id.disconnect_button)
     Button disconnectButton;
+    @BindView(R.id.userName)
+    TextView userName;
+    @BindView(R.id.userEmail)
+    TextView userEmail;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -122,41 +129,10 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                 .build();
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth mFirebaseAuth) {
                 FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                if (firebaseUser == null) {
-                    GlideApp
-                            .with(LoginActivity.this)
-                            .load(R.drawable.ic_account)
-                            .apply(RequestOptions.circleCropTransform())
-                            .error(android.R.drawable.sym_def_app_icon)
-                            .centerCrop()
-                            .placeholder(android.R.drawable.sym_def_app_icon)
-                            .into(mDisplayImageView);
-                    mNameTextView.setVisibility(View.GONE);
-                    mEmailTextView.setVisibility(View.GONE);
-                    mPostTextView.setVisible(false);
-                    mLogOutTextView.setVisible(false);
-                } else {
-                    if (firebaseUser.getPhotoUrl() != null) {
-                        GlideApp
-                                .with(LoginActivity.this)
-                                .load(firebaseUser.getPhotoUrl())
-                                .apply(RequestOptions.circleCropTransform())
-                                .error(android.R.drawable.sym_def_app_icon)
-                                .centerCrop()
-                                .placeholder(android.R.drawable.sym_def_app_icon)
-                                .into(mDisplayImageView);
-
-                    }
-                    mNameTextView.setText(firebaseUser.getDisplayName());
-                    mEmailTextView.setText(firebaseUser.getEmail());
-                    mLogInTextView.setVisible(false);
-                }
-
                 updateUI(firebaseUser);
             }
         };
@@ -289,17 +265,25 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                 GlideApp
                         .with(this)
                         .load(user.getPhotoUrl())
-                        .apply(RequestOptions.circleCropTransform())
                         .centerCrop()
                         .placeholder(android.R.drawable.sym_def_app_icon)
                         .error(android.R.drawable.sym_def_app_icon)
                         .into(mDisplayImageView);
 
+                GlideApp
+                        .with(LoginActivity.this)
+                        .load(user.getPhotoUrl())
+                        .error(android.R.drawable.sym_def_app_icon)
+                        .centerCrop()
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .into(imageViewUser);
+
             }
             mNameTextView.setText(user.getDisplayName());
             mEmailTextView.setText(user.getEmail());
             mLogInTextView.setVisible(false);
-
+            userName.setText(user.getDisplayName());
+            userEmail.setText(user.getEmail());
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             signOutButton.setVisibility(View.VISIBLE);
             disconnectButton.setVisibility(View.VISIBLE);
@@ -307,21 +291,26 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
             GlideApp
                     .with(this)
                     .load(R.drawable.ic_account)
-                    .apply(RequestOptions.circleCropTransform())
-                    .error(android.R.drawable.sym_def_app_icon)
                     .centerCrop()
-                    .placeholder(android.R.drawable.sym_def_app_icon)
                     .into(mDisplayImageView);
+            GlideApp
+                    .with(this)
+                    .load(R.drawable.ic_account)
+                    .centerCrop()
+                    .into(imageViewUser);
+
             mNameTextView.setVisibility(View.GONE);
             mEmailTextView.setVisibility(View.GONE);
             mLogOutTextView.setVisible(false);
             mPostTextView.setVisible(false);
-
+            userName.setText(R.string.app_name);
+            userEmail.setText(R.string.email_user);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
             disconnectButton.setVisibility(View.GONE);
         }
         hideProgressDialog();
+
     }
 
     @Override
