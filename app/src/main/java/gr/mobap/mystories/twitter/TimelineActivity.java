@@ -136,7 +136,7 @@ public class TimelineActivity extends Base {
                     }
                 }
             };
-            // Collection "Vouli from user anagnostou74"
+            // Collection "Funny from user mobap_gr"
             TwitterListTimeline timeline = new TwitterListTimeline.Builder()
                     .slugWithOwnerScreenName("Funny", "mobap_gr")
                     .build();

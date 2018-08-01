@@ -33,7 +33,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
     <!-- Twitter -->
     <string name="twitter">Tweets to see</string>
     <string name="timeline_empty">Tweets are coming…</string>
@@ -44,7 +43,6 @@
     <string name="log_in">Log in</string>
     <string name="log_out">Log out</string>
     <string name="disconnect">Disconnect</string>
-    <string name="authentication_failed">Authentication failed.</string>
     <!-- PostActivity -->
     <string name="post_story">Post a story</string>
     <string name="post">Post</string>
@@ -62,13 +60,16 @@
     <string name="thriller">Thriller</string>
 
     <string name="lorem">Lorem ipsum dolor </string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
 
     <string name="push">You can do more than that!</string>
     <string name="numbers">000/450</string>
     <string name="put_image">Insert an image</string>
     <string name="email_user">Author email</string>
+
+    <!-- Image content descriptions -->
+    <string name="widget_image">Logo of the app</string>
+    <string name="stories_image">An image from the story</string>
+    <string name="star_image">A star to like the story</string>
+
 
 </resources>
