@@ -143,7 +143,7 @@
             android:gravity="top|start"
             android:hint="@string/body"
             android:inputType="textMultiLine"
-            android:lines="8"
+            android:lines="4"
             android:maxLines="14"
             android:scrollHorizontally="false"
             android:scrollbars="vertical"

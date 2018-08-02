@@ -53,7 +53,7 @@ import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
 import gr.mobap.mystories.utilities.GlideApp;
 
-public class PostActivity extends Base implements View.OnFocusChangeListener {
+public class PostActivity extends Base {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -112,7 +112,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
     String type;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
-    int MIN_CHAR = 40;
+    int MIN_CHAR = 80;
     int MAX_WORDS = 450;
     int MAX_WORDS_TITLE = 10;
 
@@ -164,13 +164,12 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
             @Override
             public void onClick(View view) {
                 Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*");
+                galleryIntent.setType(getString(R.string.type_img));
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(galleryIntent, "Select Picture"), GALLERY_REQUEST_CODE);
+                startActivityForResult(Intent.createChooser(galleryIntent, getString(R.string.select_img)), GALLERY_REQUEST_CODE);
             }
         });
 
-        getTitle.setFocusable(true);
         getPrologue.setFocusable(true);
         getBody.setFocusable(true);
         getEpilogue.setFocusable(true);
@@ -181,11 +180,8 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
         getEpilogue.clearFocus();
 
         getTitle.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                setOnFocusChangeListener(getTitle);
-
                 int wordsLength = countWords(s.toString());
                 if (count == 0 && wordsLength >= MAX_WORDS_TITLE) {
                     setCharLimit(getTitle, getTitle.getText().length());
@@ -211,9 +207,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setOnFocusChangeListener(getPrologue);
-
                 int wordsLength = countWords(s.toString());
-
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getPrologue, getPrologue.getText().length());
                 } else {
@@ -264,7 +258,6 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setOnFocusChangeListener(getEpilogue);
-
                 int wordsLength = countWords(s.toString());
                 if (count == 0 && wordsLength >= MAX_WORDS) {
                     setCharLimit(getEpilogue, getEpilogue.getText().length());
@@ -289,94 +282,102 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String title = getTitle.getText().toString().trim();
-                final String prologue = getPrologue.getText().toString().trim();
-                final String body = getBody.getText().toString().trim();
-                final String epilogue = getEpilogue.getText().toString().trim();
+                if (uri == null) {
+                    Toast.makeText(PostActivity.this, getString(R.string.check_img), Toast.LENGTH_SHORT).show();
 
-                int radioButtonID = getType.getCheckedRadioButtonId();
-                RadioButton radioButton = getType.findViewById(radioButtonID);
-                type = (String) radioButton.getText();
+                } else {
+                    final String title = getTitle.getText().toString().trim();
+                    final String prologue = getPrologue.getText().toString().trim();
+                    final String body = getBody.getText().toString().trim();
+                    final String epilogue = getEpilogue.getText().toString().trim();
 
-                // do a check for empty fields
-                if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
-                    // Create the file metadata
-                    StorageMetadata metadata = new StorageMetadata.Builder()
-                            .setContentType(getString(R.string.type_img))
-                            .build();
+                    int radioButtonID = getType.getCheckedRadioButtonId();
+                    RadioButton radioButton = getType.findViewById(radioButtonID);
+                    type = (String) radioButton.getText();
 
-                    StorageReference uploadTask = mStorageRef.child(uri.getLastPathSegment());
+                    // do a check for empty fields
+                    if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
+                        // Create the file metadata
+                        StorageMetadata metadata = new StorageMetadata.Builder()
+                                .setContentType(getString(R.string.type_img))
+                                .build();
 
-                    uploadTask.putFile(uri, metadata).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            Toast.makeText(PostActivity.this, getString(R.string.upload_done, progress), Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(PostActivity.this, getString(R.string.upload_paused), Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(PostActivity.this, getString(R.string.upload_failed), Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        StorageReference uploadTask = mStorageRef.child(uri.getLastPathSegment());
 
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        uploadTask.putFile(uri, metadata).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                Toast.makeText(PostActivity.this, getString(R.string.upload_done, progress), Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(PostActivity.this, getString(R.string.upload_paused), Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Toast.makeText(PostActivity.this, getString(R.string.upload_failed), Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-                            uploadTask.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    downloadUrl = uri;
-                                    Uri userPhoto = mFirebaseUser.getPhotoUrl();
-                                    final DatabaseReference newPost = myRef.push();
-                                    //adding post contents to database reference
-                                    newPost.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            HashMap<String, Boolean> fav = new HashMap<String, Boolean>() {{
-                                                put(mFirebaseUser.getUid(), true);
-                                            }};
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                            newPost.child("date").setValue(date);
-                                            newPost.child("prologue").setValue(prologue);
-                                            newPost.child("body").setValue(body);
-                                            newPost.child("epilogue").setValue(epilogue);
-                                            newPost.child("photo").setValue(uri.toString());
-                                            newPost.child("title").setValue(title);
-                                            newPost.child("user").setValue(mFirebaseUser.getDisplayName());
-                                            newPost.child("email").setValue(mFirebaseUser.getEmail());
-                                            newPost.child("favorited").setValue(1);
-                                            newPost.child("fav").setValue(fav);
-                                            newPost.child("image").setValue(userPhoto.toString());
-                                            newPost.child("type").setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
-                                                        startActivity(intent);
-                                                        Toast.makeText(PostActivity.this, getString(R.string.upload_completed), Toast.LENGTH_SHORT).show();
+                                uploadTask.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        downloadUrl = uri;
+                                        Uri userPhoto = mFirebaseUser.getPhotoUrl();
+                                        final DatabaseReference newPost = myRef.push();
+                                        //adding post contents to database reference
+                                        newPost.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                HashMap<String, Boolean> fav = new HashMap<String, Boolean>() {{
+                                                    put(mFirebaseUser.getUid(), true);
+                                                }};
+
+                                                newPost.child("date").setValue(date);
+                                                newPost.child("prologue").setValue(prologue);
+                                                newPost.child("body").setValue(body);
+                                                newPost.child("epilogue").setValue(epilogue);
+                                                newPost.child("photo").setValue(uri.toString());
+                                                newPost.child("title").setValue(title);
+                                                newPost.child("user").setValue(mFirebaseUser.getDisplayName());
+                                                newPost.child("email").setValue(mFirebaseUser.getEmail());
+                                                newPost.child("favorited").setValue(1);
+                                                newPost.child("fav").setValue(fav);
+                                                newPost.child("image").setValue(userPhoto.toString());
+                                                newPost.child("type").setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
+                                                            startActivity(intent);
+                                                            Toast.makeText(PostActivity.this, getString(R.string.upload_completed), Toast.LENGTH_SHORT).show();
+                                                        }
                                                     }
-                                                }
-                                            });
-                                        }
+                                                });
+                                            }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    });
-                                }
-                            });
+                                            }
+                                        });
+                                    }
+                                });
 
 
-                        }
-                    });
+                            }
+                        });
 
+                    }
+                    if (TextUtils.isEmpty(title) || TextUtils.isEmpty(prologue) || TextUtils.isEmpty(body) || TextUtils.isEmpty(epilogue)) {
+                        Toast.makeText(PostActivity.this, getString(R.string.check_post), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -416,22 +417,12 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
     private void setOnFocusChangeListener(EditText editText) {
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    if (editText.getText().toString().trim().length() < MIN_CHAR) {
-                        editText.setError(getString(R.string.push));
-                    }
+                if (editText.getText().toString().trim().length() < MIN_CHAR) {
+                    editText.setError(getString(R.string.push));
                 }
             }
 
         });
     }
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (hasFocus) {
-            setOnFocusChangeListener(getPrologue);
-            setOnFocusChangeListener(getBody);
-            setOnFocusChangeListener(getEpilogue);
-        }
-    }
 }
