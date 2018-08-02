@@ -19,7 +19,6 @@
             android:contentDescription="@string/stories_image"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +35,6 @@
             android:text="@string/app_name"
             app:layout_constraintBottom_toTopOf="@+id/author"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/user_photo"
             app:layout_constraintTop_toBottomOf="@+id/iv_main_pic" />
 
@@ -53,6 +51,7 @@
             android:background="?attr/selectableItemBackground"
             android:contentDescription="@string/star_image"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintEnd_toStartOf="@+id/num_stars"
             app:layout_constraintStart_toEndOf="@+id/author"
             app:srcCompat="@drawable/ic_favorite_empty" />
@@ -63,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:layout_marginBottom="13dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
@@ -72,6 +71,7 @@
             android:textSize="@dimen/small_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toEndOf="@+id/star" />
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -79,10 +79,13 @@
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_main_pic"
             app:srcCompat="@drawable/ic_account" />
@@ -101,6 +104,7 @@
             android:text="@string/email_user"
             android:textSize="@dimen/small_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.7"
             app:layout_constraintEnd_toStartOf="@+id/star"
             app:layout_constraintStart_toEndOf="@+id/user_photo"
             app:layout_constraintTop_toBottomOf="@+id/title" />

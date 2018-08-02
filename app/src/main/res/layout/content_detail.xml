@@ -174,7 +174,6 @@
                     style="@style/SimpleText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
@@ -182,10 +181,9 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/date"
                     android:textSize="@dimen/small_text_size"
-                    app:layout_constraintBottom_toTopOf="@+id/info_user_tv"
                     app:layout_constraintEnd_toStartOf="@+id/star_detail"
                     app:layout_constraintHorizontal_bias="0.4"
-                    app:layout_constraintStart_toEndOf="@+id/user_photo"
+                    app:layout_constraintStart_toEndOf="@+id/guideline3"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
@@ -242,7 +240,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/info_email_tv"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.6"
-                    app:layout_constraintStart_toEndOf="@+id/user_photo"
+                    app:layout_constraintStart_toEndOf="@+id/guideline3"
                     app:layout_constraintTop_toBottomOf="@+id/info_date_tv" />
 
                 <TextView
@@ -261,8 +259,15 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.6"
-                    app:layout_constraintStart_toEndOf="@+id/user_photo"
+                    app:layout_constraintStart_toEndOf="@+id/guideline3"
                     app:layout_constraintTop_toBottomOf="@+id/info_user_tv" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="80dp" />
 
             </android.support.constraint.ConstraintLayout>
 
