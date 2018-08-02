@@ -92,7 +92,7 @@ public class StoriesActivity extends Base {
                 startActivity(i);
             } else {
                 Intent i = new Intent(StoriesActivity.this, LoginActivity.class);
-                Snackbar.make(view, "Sign in to post your story", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, getString(R.string.sign_to_post), Snackbar.LENGTH_LONG).show();
                 startActivity(i);
             }
         });
@@ -115,7 +115,7 @@ public class StoriesActivity extends Base {
 
         myRef = FirebaseDatabase.getInstance()
                 .getReference()
-                .child("stories");
+                .child(getString(R.string.stories));
         myRef.keepSynced(true);
 
         valueEventListener = new ValueEventListener() {
@@ -191,7 +191,7 @@ public class StoriesActivity extends Base {
                     @Override
                     public void onClick(View starView) {
                         DatabaseReference globalPostRef = myRef.child(post_key);
-                        DatabaseReference userPostRef = myRef.child("user-posts").child(user.getUid()).child(post_key);
+                        DatabaseReference userPostRef = myRef.child(getString(R.string.user_posts)).child(user.getUid()).child(post_key);
 
                         onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
@@ -245,11 +245,11 @@ public class StoriesActivity extends Base {
                 public void onComplete(DatabaseError databaseError, boolean b,
                                        DataSnapshot dataSnapshot) {
                     // Transaction completed
-                    Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                    Log.d(TAG, getString(R.string.post_transaction) + databaseError);
                 }
             });
         } else {
-            Toast.makeText(StoriesActivity.this, "Please login to vote", Toast.LENGTH_SHORT).show();
+            Toast.makeText(StoriesActivity.this, getString(R.string.login_vote), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -260,7 +260,7 @@ public class StoriesActivity extends Base {
         if (user != null) {
             return FirebaseAuth.getInstance().getCurrentUser().getUid();
         } else {
-            Toast.makeText(StoriesActivity.this, "There is no userId", Toast.LENGTH_SHORT).show();
+            Toast.makeText(StoriesActivity.this, getString(R.string.user_id), Toast.LENGTH_SHORT).show();
             return null;
         }
 

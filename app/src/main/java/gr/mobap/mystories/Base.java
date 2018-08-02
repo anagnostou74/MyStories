@@ -39,7 +39,6 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -147,33 +146,32 @@ public class Base extends AppCompatActivity implements NavigationView.OnNavigati
     public void shareSocial(CharSequence text, CharSequence subject, Uri imageUri) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.setType("image/png");
+        intent.setType(getString(R.string.type_img));
         intent.putExtra(Intent.EXTRA_TEXT, text);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject.toString());
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-        //startActivity(Intent.createChooser(intent, "Κοινοποίηση εφαρμογής"));
 
         // get available share intents
         List<Intent> targets = new ArrayList<>();
         Intent template = new Intent(Intent.ACTION_SEND);
-        template.setType("text/plain");
+        template.setType(getString(R.string.type_txt));
         List<ResolveInfo> candidates = this.getPackageManager().
                 queryIntentActivities(template, 0);
 
         // remove facebook
         for (ResolveInfo candidate : candidates) {
             String packageName = candidate.activityInfo.packageName;
-            if (!packageName.equals("com.facebook.katana")) {
+            if (!packageName.equals(getString(R.string.facebook))) {
                 Intent target = new Intent(android.content.Intent.ACTION_SEND);
-                target.setType("text/plain");
+                target.setType(getString(R.string.type_txt));
                 target.putExtra(Intent.EXTRA_TEXT, text);
                 target.putExtra(Intent.EXTRA_SUBJECT, subject);
                 target.setPackage(packageName);
                 targets.add(target);
             }
         }
-        Intent chooser = Intent.createChooser(targets.remove(0), "Κοινοποίηση εφαρμογής");
+        Intent chooser = Intent.createChooser(targets.remove(0), getString(R.string.share));
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targets.toArray(new Parcelable[]{}));
         startActivity(chooser);
     }

@@ -71,7 +71,7 @@ public class TwitterCoreMainActivity extends Base {
                 String token = authToken.token;
                 String secret = authToken.secret;
 
-                String msg = "@" + session.getUserName() + " logged in! (#" + session.getUserId() + ")";
+                String msg = getString(R.string.msg_twitter, session.getUserName(), session.getUserId());
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
                 Intent i = new Intent(TwitterCoreMainActivity.this, TimelineActivity.class);
                 startActivity(i);
@@ -82,7 +82,7 @@ public class TwitterCoreMainActivity extends Base {
                 // Upon error, show a toast message indicating that authorization request failed.
                 Toast.makeText(getApplicationContext(), exception.getMessage(),
                         Toast.LENGTH_SHORT).show();
-                Log.d("TwitterKit", "Login with Twitter failure", exception);
+                Log.d(getString(R.string.kit), getString(R.string.login_twitter), exception);
 
             }
         });

@@ -99,7 +99,7 @@ public class DetailActivity extends Base {
         // Initialize Database
         myRef = FirebaseDatabase.getInstance()
                 .getReference()
-                .child("stories")
+                .child(getString(R.string.stories))
                 .child(mPostKey);
         myRef.keepSynced(true);
 
@@ -127,16 +127,16 @@ public class DetailActivity extends Base {
                 // [END_EXCLUDE]
 
                 fab.setOnClickListener(view -> {
-                    shareSocial(myStory.prologue, "I am reading '" + myStory.title + "' from " + getString(R.string.app_name), Uri.parse(myStory.image));
+                    shareSocial(myStory.prologue, getString(R.string.share_msg, myStory.title, getString(R.string.app_name)), Uri.parse(myStory.image));
                 });
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                Log.w(TAG, getString(R.string.load_post_cancel), databaseError.toException());
                 // [START_EXCLUDE]
-                Toast.makeText(DetailActivity.this, "Failed to load post.",
+                Toast.makeText(DetailActivity.this, getString(R.string.load_post_fail),
                         Toast.LENGTH_SHORT).show();
                 // [END_EXCLUDE]
             }

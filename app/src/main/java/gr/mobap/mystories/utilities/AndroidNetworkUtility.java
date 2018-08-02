@@ -19,11 +19,3 @@ public class AndroidNetworkUtility extends AppCompatActivity {
         return flag;
     }
 }
-
-
-//    AndroidNetworkUtility androidNetworkUtility = new AndroidNetworkUtility();
-// if (androidNetworkUtility.isConnected(this)) {
-//        new TwitterAsyncTask().execute(twitterScreenName,this);
-//        } else {
-//        Log.v(TAG, "Network not Available!");
-//        }

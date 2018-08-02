@@ -73,11 +73,11 @@ public class ListViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Intent fillInIntent = new Intent();
+        intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putString("message", myStoryArrayList.get(position).getTitle());
-        fillInIntent.putExtras(bundle);
-        views.setOnClickFillInIntent(R.id.story_title, fillInIntent);
+        intent.putExtras(bundle);
+        views.setOnClickFillInIntent(R.id.story_title, intent);
 
         return views;
     }

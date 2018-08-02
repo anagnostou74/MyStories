@@ -72,4 +72,51 @@
     <string name="star_image">A star to like the story</string>
 
 
+    <string name="message">message</string>
+    <string name="share">Share</string>
+    <string name="type_img">image/*</string>
+    <string name="type_txt">text/plain</string>
+    <string name="facebook">com.facebook.katana</string>
+
+    <!-- MyFirebaseMessagingService -->
+    <string name="from">From: </string>
+    <string name="payload">Message data payload: </string>
+    <string name="notification_body">Message Notification Body: </string>
+    <string name="channel_id">my_stories_channel_id</string>
+    <string name="fcm">FCM Message</string>
+    <string name="new_token">New token: </string>
+
+    <!-- TwitterCoreMainActivity -->
+    <string name="kit">TwitterKit</string>
+    <string name="login_twitter">Login with Twitter failure</string>
+    <string name="msg_twitter">/@%1$s logged in! (#%2$d)</string>
+    <!-- TimelineActivity -->
+    <string name="funny_list">Funny</string>
+    <string name="twitter_user">mobap_gr</string>
+    <!-- StoriesActivity -->
+    <string name="sign_to_post">Sign in to post your story</string>
+    <string name="stories">stories</string>
+    <string name="user_posts">user-posts</string>
+    <string name="post_transaction">postTransaction:onComplete:</string>
+    <string name="login_vote">Please login to vote</string>
+    <string name="user_id">There is no userId</string>
+    <!-- LoginActivity -->
+    <string name="connection_fail">onConnectionFailed:</string>
+    <string name="play_error">Google Play Services error.</string>
+    <string name="sign_with_cred">signInWithCredential:onComplete:</string>
+    <string name="firebase_auth_google">firebaseAuthWithGoogle:</string>
+    <!-- PostActivity -->
+    <string name="upload_paused">Upload is paused</string>
+    <string name="upload_failed">Upload failed</string>
+    <string name="upload_done">Upload is %1$f \u0025 done</string>
+    <string name="upload_completed">Upload completed</string>
+    <string name="words_no">%1$d/%2$d</string>
+
+    <!-- DetailActivity -->
+    <string name="load_post_cancel">loadPost:onCancelled</string>
+    <string name="load_post_fail">Failed to load post.</string>
+    <string name="share_msg">I am reading \' %1$s \' from %2$s</string>
+
+
+
 </resources>

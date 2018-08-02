@@ -188,12 +188,12 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d(TAG, getString(R.string.firebase_auth_google) + acct.getId());
         showProgressDialog();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
-            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+            Log.d(TAG, getString(R.string.sign_with_cred) + task.isSuccessful());
             if (!task.isSuccessful()) {
                 mNameTextView.setText(task.getException().getMessage());
             } else {
@@ -314,8 +314,8 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
-        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, getString(R.string.connection_fail) + connectionResult);
+        Toast.makeText(this, getString(R.string.play_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override

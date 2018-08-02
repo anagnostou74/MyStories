@@ -138,7 +138,7 @@ public class TimelineActivity extends Base {
             };
             // Collection "Funny from user mobap_gr"
             TwitterListTimeline timeline = new TwitterListTimeline.Builder()
-                    .slugWithOwnerScreenName("Funny", "mobap_gr")
+                    .slugWithOwnerScreenName(getString(R.string.funny_list), getString(R.string.twitter_user))
                     .build();
 
             return new TweetTimelineListAdapter.Builder(getApplication())

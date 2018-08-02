@@ -44,6 +44,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,9 +112,8 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
     String type;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
-    int MIN_CHAR_TITLE = 5;
     int MIN_CHAR = 40;
-    int MAX_WORDS = 320;
+    int MAX_WORDS = 450;
     int MAX_WORDS_TITLE = 10;
 
     @Override
@@ -143,7 +143,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
+        DateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault());
         final String date = df.format(Calendar.getInstance().getTime());
         getDate.setText(date);
         getUsername.setText(mFirebaseUser.getDisplayName());
@@ -193,7 +193,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                     removeFilter(getTitle);
                 }
 
-                titleNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS_TITLE);
+                titleNo.setText(getString(R.string.words_no, wordsLength, MAX_WORDS_TITLE));
             }
 
             @Override
@@ -220,7 +220,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                     removeFilter(getPrologue);
                 }
 
-                prologueNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS);
+                prologueNo.setText(getString(R.string.words_no, wordsLength, MAX_WORDS));
             }
 
             @Override
@@ -246,7 +246,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                     removeFilter(getBody);
                 }
 
-                bodyNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS);
+                bodyNo.setText(getString(R.string.words_no, wordsLength, MAX_WORDS));
             }
 
             @Override
@@ -272,7 +272,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                     removeFilter(getEpilogue);
                 }
 
-                epilogueNo.setText(String.valueOf(wordsLength) + "/" + MAX_WORDS);
+                epilogueNo.setText(getString(R.string.words_no, wordsLength, MAX_WORDS));
             }
 
             @Override
@@ -302,7 +302,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                 if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
                     // Create the file metadata
                     StorageMetadata metadata = new StorageMetadata.Builder()
-                            .setContentType("image/jpeg")
+                            .setContentType(getString(R.string.type_img))
                             .build();
 
                     StorageReference uploadTask = mStorageRef.child(uri.getLastPathSegment());
@@ -311,17 +311,17 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            Toast.makeText(PostActivity.this, "Upload is " + progress + "% done", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PostActivity.this, getString(R.string.upload_done, progress), Toast.LENGTH_SHORT).show();
                         }
                     }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(PostActivity.this, "Upload is paused", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PostActivity.this, getString(R.string.upload_paused), Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            Toast.makeText(PostActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PostActivity.this, getString(R.string.upload_failed), Toast.LENGTH_SHORT).show();
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
@@ -359,7 +359,7 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
                                                     if (task.isSuccessful()) {
                                                         Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
                                                         startActivity(intent);
-                                                        Toast.makeText(PostActivity.this, "Upload completed", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(PostActivity.this, getString(R.string.upload_completed), Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
@@ -428,10 +428,10 @@ public class PostActivity extends Base implements View.OnFocusChangeListener {
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        setOnFocusChangeListener(getTitle);
-        setOnFocusChangeListener(getPrologue);
-        setOnFocusChangeListener(getBody);
-        setOnFocusChangeListener(getEpilogue);
-
+        if (hasFocus) {
+            setOnFocusChangeListener(getPrologue);
+            setOnFocusChangeListener(getBody);
+            setOnFocusChangeListener(getEpilogue);
+        }
     }
 }
