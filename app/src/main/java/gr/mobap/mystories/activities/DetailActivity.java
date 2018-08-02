@@ -151,9 +151,14 @@ public class DetailActivity extends Base {
                 starDetail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DatabaseReference userPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.stories)).child(getString(R.string.user_posts)).child(user.getUid()).child(mPostKey);
-                        onStarClicked(myRef);
-                        onStarClicked(userPostRef);
+                        if (user != null) {
+                            DatabaseReference userPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.stories)).child(getString(R.string.user_posts)).child(user.getUid()).child(mPostKey);
+                            onStarClicked(myRef);
+                            onStarClicked(userPostRef);
+                        } else {
+                            Toast.makeText(DetailActivity.this, getString(R.string.login_vote), Toast.LENGTH_SHORT).show();
+
+                        }
                     }
                 });
 
@@ -174,40 +179,35 @@ public class DetailActivity extends Base {
 
     // [START post_stars_transaction]
     public void onStarClicked(DatabaseReference postRef) {
-        if (user != null) {
-            postRef.runTransaction(new Transaction.Handler() {
-                @Override
-                public Transaction.Result doTransaction(MutableData mutableData) {
-                    MyStory p = mutableData.getValue(MyStory.class);
-                    if (p == null) {
-                        return Transaction.success(mutableData);
-                    }
-                    if (p.fav.containsKey(getUid())) {
-                        // Unstar the post and remove self from stars
-                        p.favorited = p.favorited - 1;
-                        p.fav.remove(getUid());
-                    } else {
-                        // Star the post and add self to stars
-                        p.favorited = p.favorited + 1;
-                        p.fav.put(getUid(), true);
-                    }
-
-                    // Set value and report transaction success
-                    mutableData.setValue(p);
+        postRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                MyStory p = mutableData.getValue(MyStory.class);
+                if (p == null) {
                     return Transaction.success(mutableData);
                 }
-
-                @Override
-                public void onComplete(DatabaseError databaseError, boolean b,
-                                       DataSnapshot dataSnapshot) {
-                    // Transaction completed
-                    Log.d(TAG, getString(R.string.post_transaction) + databaseError);
+                if (p.fav.containsKey(getUid())) {
+                    // Unstar the post and remove self from stars
+                    p.favorited = p.favorited - 1;
+                    p.fav.remove(getUid());
+                } else {
+                    // Star the post and add self to stars
+                    p.favorited = p.favorited + 1;
+                    p.fav.put(getUid(), true);
                 }
-            });
-        } else {
-            Toast.makeText(DetailActivity.this, getString(R.string.login_vote), Toast.LENGTH_SHORT).show();
-        }
 
+                // Set value and report transaction success
+                mutableData.setValue(p);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Log.d(TAG, getString(R.string.post_transaction) + databaseError);
+            }
+        });
     }
 
     // [END post_stars_transaction]
