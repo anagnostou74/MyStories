@@ -72,7 +72,6 @@ public class StoriesActivity extends Base {
     Parcelable mListState;
     int recyclerViewPosition;
     private static Bundle mBundleRecyclerViewState;
-    private FirebaseAuth mAuth;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
@@ -84,7 +83,7 @@ public class StoriesActivity extends Base {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         fab.setOnClickListener(view -> {
             if (user != null) {
