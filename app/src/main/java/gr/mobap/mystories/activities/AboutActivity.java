@@ -66,7 +66,7 @@ public class AboutActivity extends Base {
         userProfile();
     }
 
-
+    // Function to email the developer
     private void mail() {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType(getString(R.string.type));
@@ -84,6 +84,7 @@ public class AboutActivity extends Base {
         }
     }
 
+    // Function to open play store and go to app's page
     private void launchMarket() {
 
         Uri uri = Uri.parse(getString(R.string.market) + this.getPackageName());

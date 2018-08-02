@@ -160,14 +160,11 @@ public class PostActivity extends Base {
         }
 
         //to upload an image from phones gallery
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setType(getString(R.string.type_img));
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(galleryIntent, getString(R.string.select_img)), GALLERY_REQUEST_CODE);
-            }
+        imageButton.setOnClickListener(view -> {
+            Intent galleryIntent = new Intent();
+            galleryIntent.setType(getString(R.string.type_img));
+            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(galleryIntent, getString(R.string.select_img)), GALLERY_REQUEST_CODE);
         });
 
         getPrologue.setFocusable(true);
@@ -179,6 +176,7 @@ public class PostActivity extends Base {
         getBody.clearFocus();
         getEpilogue.clearFocus();
 
+        // controls the edit text fields and sets max limit
         getTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -202,6 +200,7 @@ public class PostActivity extends Base {
             }
         });
 
+        // controls the edit text fields and sets max limit
         getPrologue.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -227,6 +226,7 @@ public class PostActivity extends Base {
             }
         });
 
+        // controls the edit text fields and sets max limit
         getBody.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -253,6 +253,7 @@ public class PostActivity extends Base {
             }
         });
 
+        // controls the edit text fields and sets max limit
         getEpilogue.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -279,105 +280,80 @@ public class PostActivity extends Base {
         });
 
         // posting to Firebase
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (uri == null) {
-                    Toast.makeText(PostActivity.this, getString(R.string.check_img), Toast.LENGTH_SHORT).show();
+        btnPost.setOnClickListener(view -> {
+            if (uri == null) { // check if user choose an image
+                Toast.makeText(PostActivity.this, getString(R.string.check_img), Toast.LENGTH_SHORT).show();
 
-                } else {
-                    final String title = getTitle.getText().toString().trim();
-                    final String prologue = getPrologue.getText().toString().trim();
-                    final String body = getBody.getText().toString().trim();
-                    final String epilogue = getEpilogue.getText().toString().trim();
+            } else {
+                final String title = getTitle.getText().toString().trim();
+                final String prologue = getPrologue.getText().toString().trim();
+                final String body = getBody.getText().toString().trim();
+                final String epilogue = getEpilogue.getText().toString().trim();
 
-                    int radioButtonID = getType.getCheckedRadioButtonId();
-                    RadioButton radioButton = getType.findViewById(radioButtonID);
-                    type = (String) radioButton.getText();
+                int radioButtonID = getType.getCheckedRadioButtonId();
+                RadioButton radioButton = getType.findViewById(radioButtonID);
+                type = (String) radioButton.getText();
 
-                    // do a check for empty fields
-                    if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
-                        // Create the file metadata
-                        StorageMetadata metadata = new StorageMetadata.Builder()
-                                .setContentType(getString(R.string.type_img))
-                                .build();
+                // do a check for empty fields
+                if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(prologue) && !TextUtils.isEmpty(body) && !TextUtils.isEmpty(epilogue)) {
+                    // Create the file metadata
+                    StorageMetadata metadata = new StorageMetadata.Builder()
+                            .setContentType(getString(R.string.type_img))
+                            .build();
 
-                        StorageReference uploadTask = mStorageRef.child(uri.getLastPathSegment());
+                    StorageReference uploadTask = mStorageRef.child(uri.getLastPathSegment());
 
-                        uploadTask.putFile(uri, metadata).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                Toast.makeText(PostActivity.this, getString(R.string.upload_done, progress), Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(PostActivity.this, getString(R.string.upload_paused), Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                Toast.makeText(PostActivity.this, getString(R.string.upload_failed), Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    // starts the task to upload image in firestore
+                    uploadTask.putFile(uri, metadata).addOnProgressListener(taskSnapshot -> {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        Toast.makeText(PostActivity.this, getString(R.string.upload_done, progress), Toast.LENGTH_SHORT).show();
+                    }).addOnPausedListener(taskSnapshot -> Toast.makeText(PostActivity.this, getString(R.string.upload_paused), Toast.LENGTH_SHORT).show()).addOnFailureListener(exception -> Toast.makeText(PostActivity.this, getString(R.string.upload_failed), Toast.LENGTH_SHORT).show()).addOnSuccessListener(taskSnapshot -> {
+                        // if uploading is successful starts to update the DB
+                        uploadTask.getDownloadUrl().addOnSuccessListener(uri -> {
+                            downloadUrl = uri;
+                            Uri userPhoto = mFirebaseUser.getPhotoUrl();
+                            final DatabaseReference newPost = myRef.push();
+                            //adding post contents to database reference
+                            newPost.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    HashMap<String, Boolean> fav = new HashMap<String, Boolean>() {{
+                                        put(mFirebaseUser.getUid(), true);
+                                    }};
 
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    newPost.child("date").setValue(date);
+                                    newPost.child("prologue").setValue(prologue);
+                                    newPost.child("body").setValue(body);
+                                    newPost.child("epilogue").setValue(epilogue);
+                                    newPost.child("photo").setValue(uri.toString());
+                                    newPost.child("title").setValue(title);
+                                    newPost.child("user").setValue(mFirebaseUser.getDisplayName());
+                                    newPost.child("email").setValue(mFirebaseUser.getEmail());
+                                    newPost.child("favorited").setValue(1);
+                                    newPost.child("fav").setValue(fav);
+                                    newPost.child("image").setValue(userPhoto.toString());
+                                    newPost.child("type").setValue(type).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
+                                            startActivity(intent);
+                                            Toast.makeText(PostActivity.this, getString(R.string.upload_completed), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
 
-                                uploadTask.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        downloadUrl = uri;
-                                        Uri userPhoto = mFirebaseUser.getPhotoUrl();
-                                        final DatabaseReference newPost = myRef.push();
-                                        //adding post contents to database reference
-                                        newPost.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                HashMap<String, Boolean> fav = new HashMap<String, Boolean>() {{
-                                                    put(mFirebaseUser.getUid(), true);
-                                                }};
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                                                newPost.child("date").setValue(date);
-                                                newPost.child("prologue").setValue(prologue);
-                                                newPost.child("body").setValue(body);
-                                                newPost.child("epilogue").setValue(epilogue);
-                                                newPost.child("photo").setValue(uri.toString());
-                                                newPost.child("title").setValue(title);
-                                                newPost.child("user").setValue(mFirebaseUser.getDisplayName());
-                                                newPost.child("email").setValue(mFirebaseUser.getEmail());
-                                                newPost.child("favorited").setValue(1);
-                                                newPost.child("fav").setValue(fav);
-                                                newPost.child("image").setValue(userPhoto.toString());
-                                                newPost.child("type").setValue(type).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Intent intent = new Intent(PostActivity.this, StoriesActivity.class);
-                                                            startActivity(intent);
-                                                            Toast.makeText(PostActivity.this, getString(R.string.upload_completed), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                    }
-                                });
-
-
-                            }
+                                }
+                            });
                         });
 
-                    }
-                    if (TextUtils.isEmpty(title) || TextUtils.isEmpty(prologue) || TextUtils.isEmpty(body) || TextUtils.isEmpty(epilogue)) {
-                        Toast.makeText(PostActivity.this, getString(R.string.check_post), Toast.LENGTH_SHORT).show();
-                    }
+
+                    });
+
+                }
+                if (TextUtils.isEmpty(title) || TextUtils.isEmpty(prologue) || TextUtils.isEmpty(body) || TextUtils.isEmpty(epilogue)) {
+                    Toast.makeText(PostActivity.this, getString(R.string.check_post), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -392,7 +368,7 @@ public class PostActivity extends Base {
             imageButton.setImageURI(uri);
         }
     }
-
+    // function to count words
     private int countWords(String s) {
         String trim = s.trim();
         if (trim.isEmpty())
@@ -402,11 +378,13 @@ public class PostActivity extends Base {
 
     private InputFilter filter;
 
+    // set character limit
     private void setCharLimit(EditText et, int max) {
         filter = new InputFilter.LengthFilter(max);
         et.setFilters(new InputFilter[]{filter});
     }
 
+    // remove filter if characters are inside limit
     private void removeFilter(EditText et) {
         if (filter != null) {
             et.setFilters(new InputFilter[0]);
@@ -414,14 +392,12 @@ public class PostActivity extends Base {
         }
     }
 
+    // If user hasn't write enough sends a request, but do not stop him from submitting the story
     private void setOnFocusChangeListener(EditText editText) {
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (editText.getText().toString().trim().length() < MIN_CHAR) {
-                    editText.setError(getString(R.string.push));
-                }
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (editText.getText().toString().trim().length() < MIN_CHAR) {
+                editText.setError(getString(R.string.push));
             }
-
         });
     }
 

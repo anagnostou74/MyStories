@@ -128,12 +128,9 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
                 .build();
 
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth mFirebaseAuth) {
-                FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                updateUI(firebaseUser);
-            }
+        mAuthListener = mFirebaseAuth -> {
+            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+            updateUI(firebaseUser);
         };
 
     }
@@ -258,6 +255,7 @@ public class LoginActivity extends Base implements GoogleApiClient.OnConnectionF
         }
     }
 
+    // if user is login or not updates drawer and xml and hides or make visible fields
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             if (user.getPhotoUrl() != null) {

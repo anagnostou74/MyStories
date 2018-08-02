@@ -111,6 +111,7 @@ public class DetailActivity extends Base {
                 .child(mPostKey);
         myRef.keepSynced(true);
 
+        // Reading values and set them to proper text views
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -134,11 +135,11 @@ public class DetailActivity extends Base {
                         .into(user_photo_iv);
                 // [END_EXCLUDE]
 
-                fab.setOnClickListener(view -> {
+                fab.setOnClickListener(view -> { // fab reading title and prologue and share them
                     shareSocial(myStory.prologue, getString(R.string.share_msg, myStory.title, getString(R.string.app_name)), Uri.parse(myStory.image));
                 });
 
-                if (user != null) {
+                if (user != null) { // if user is login and likes the story set the heart drawable accordingly
                     if (myStory.fav.containsKey(getUid())) {
                         starDetail.setImageResource(R.drawable.ic_favorite_full);
                     } else {
@@ -148,17 +149,14 @@ public class DetailActivity extends Base {
                     starDetail.setImageResource(R.drawable.ic_favorite_empty);
                 }
 
-                starDetail.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (user != null) {
-                            DatabaseReference userPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.stories)).child(getString(R.string.user_posts)).child(user.getUid()).child(mPostKey);
-                            onStarClicked(myRef);
-                            onStarClicked(userPostRef);
-                        } else {
-                            Toast.makeText(DetailActivity.this, getString(R.string.login_vote), Toast.LENGTH_SHORT).show();
+                starDetail.setOnClickListener(v -> {
+                    if (user != null) { // if user is login starts the 'onStarClicked' function or asks user to login
+                        DatabaseReference userPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.stories)).child(getString(R.string.user_posts)).child(user.getUid()).child(mPostKey);
+                        onStarClicked(myRef);
+                        onStarClicked(userPostRef);
+                    } else {
+                        Toast.makeText(DetailActivity.this, getString(R.string.login_vote), Toast.LENGTH_SHORT).show();
 
-                        }
                     }
                 });
 
@@ -178,6 +176,7 @@ public class DetailActivity extends Base {
     }
 
     // [START post_stars_transaction]
+    // user likes or dislikes a story
     public void onStarClicked(DatabaseReference postRef) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -211,7 +210,7 @@ public class DetailActivity extends Base {
     }
 
     // [END post_stars_transaction]
-
+    // function returns users id
     public String getUid() {
         if (user != null) {
             return user.getUid();

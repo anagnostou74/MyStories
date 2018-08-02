@@ -111,7 +111,7 @@ public class TimelineActivity extends Base {
 
     }
 
-
+    // uses Async Task to complete Project Requirements
     @SuppressLint("StaticFieldLeak")
     private class FetchTweets extends AsyncTask<Void, Void, TweetTimelineListAdapter> {
 

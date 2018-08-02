@@ -83,8 +83,6 @@ public class StoriesActivity extends Base {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
         fab.setOnClickListener(view -> {
             if (user != null) {
                 Intent i = new Intent(StoriesActivity.this, PostActivity.class);
@@ -104,6 +102,7 @@ public class StoriesActivity extends Base {
         navigationView.setNavigationItemSelectedListener(this);
         userProfile();
 
+        // sending info to widget
         Intent intent = new Intent(this, MyStoriesWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
@@ -112,6 +111,7 @@ public class StoriesActivity extends Base {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, ids);
         sendBroadcast(intent);
 
+        // Initialize Database
         myRef = FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.stories));
@@ -174,20 +174,15 @@ public class StoriesActivity extends Base {
                 holder.setStar(model.getFavorited());
                 holder.setUserPhoto(getApplicationContext(), model.getImage());
                 holder.setUserName(model.getUser());
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Launch DetailActivity
-                        Intent detailActivity = new Intent(StoriesActivity.this, DetailActivity.class);
-                        detailActivity.putExtra(DetailActivity.EXTRA_POST_KEY, post_key);
-                        startActivity(detailActivity);
-                    }
+                holder.itemView.setOnClickListener(view -> {
+                    // Launch DetailActivity
+                    Intent detailActivity = new Intent(StoriesActivity.this, DetailActivity.class);
+                    detailActivity.putExtra(DetailActivity.EXTRA_POST_KEY, post_key);
+                    startActivity(detailActivity);
                 });
 
                 // Bind Post to ViewHolder, setting OnClickListener for the star button
-                holder.bindToPost(model, starView -> {
-                    setStar(post_key);
-                });
+                holder.bindToPost(model, starView -> setStar(post_key));
 
             }
         };
@@ -218,8 +213,8 @@ public class StoriesActivity extends Base {
         }
     }
 
-
     // [START post_stars_transaction]
+    // user likes or dislikes a story
     public void onStarClicked(DatabaseReference postRef) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -253,6 +248,7 @@ public class StoriesActivity extends Base {
     }
 
     // [END post_stars_transaction]
+    // function returns users id
     public String getUid() {
         if (user != null) {
             return user.getUid();
@@ -263,6 +259,7 @@ public class StoriesActivity extends Base {
 
     }
 
+    // to restore instance state and connection with db
     @Override
     protected void onResume() {
         super.onResume();
@@ -270,18 +267,16 @@ public class StoriesActivity extends Base {
         myRef.addValueEventListener(valueEventListener);
 
         if (mBundleRecyclerViewState != null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mListState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
-                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+            new Handler().postDelayed(() -> {
+                mListState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
+                recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
 
-                }
             }, 50);
         }
         recyclerView.setLayoutManager(mLayoutManager);
     }
 
+    // to destroy connection with db
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -301,6 +296,7 @@ public class StoriesActivity extends Base {
         myRef.removeEventListener(valueEventListener);
     }
 
+    // to save instance state when app pauses
     @Override
     protected void onPause() {
         super.onPause();
@@ -309,17 +305,15 @@ public class StoriesActivity extends Base {
         mBundleRecyclerViewState.putParcelable(LIST_STATE_KEY, mListState);
     }
 
+    // to save instance state when user rotates screen
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (mBundleRecyclerViewState != null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mListState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
-                    recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+            new Handler().postDelayed(() -> {
+                mListState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
+                recyclerView.getLayoutManager().onRestoreInstanceState(mListState);
 
-                }
             }, 50);
         }
         recyclerView.setLayoutManager(mLayoutManager);

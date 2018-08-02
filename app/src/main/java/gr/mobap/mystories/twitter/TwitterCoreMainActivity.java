@@ -83,12 +83,6 @@ public class TwitterCoreMainActivity extends Base {
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                //requestEmailAddress(getApplicationContext(), result.data);
-                // The TwitterSession is also available through:
-                // Twitter.getInstance().core.getSessionManager().getActiveSession()
-                //TwitterSession session = result.data;
-                // Remove toast and use the TwitterSession's userID
-                // with your app's user model
 
                 TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
                 TwitterAuthToken authToken = session.getAuthToken();

@@ -24,7 +24,7 @@
     <string name="send">Sending email</string>
     <string name="no_mail_programs">No mail programs installed</string>
     <!-- Rate the app -->
-    <string name="market">market://details?id=</string>
+    <string name="market">market://details?id=gr.mobap.mystories</string>
     <string name="rate">Rate the application</string>
     <!-- Play store -->
     <string name="failed2">I could not communicate with Google Play! Check your internet connection.</string>

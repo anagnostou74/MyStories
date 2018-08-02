@@ -31,7 +31,7 @@ import gr.mobap.mystories.activities.StoriesActivity;
 import gr.mobap.mystories.twitter.TimelineActivity;
 import gr.mobap.mystories.utilities.GlideApp;
 
-
+// a base class which controls navigation from drawer and updates user profile
 public class Base extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
