@@ -109,7 +109,7 @@
     <!-- PostActivity -->
     <string name="upload_paused">Upload is paused</string>
     <string name="upload_failed">Upload failed</string>
-    <string name="upload_done">Upload is %1$f \u0025 done</string>
+    <string name="upload_done">Upload is %1$f%% done</string>
     <string name="upload_completed">Upload completed</string>
     <string name="words_no">%1$d/%2$d</string>
     <string name="check_post">You have not completed all the fields</string>
