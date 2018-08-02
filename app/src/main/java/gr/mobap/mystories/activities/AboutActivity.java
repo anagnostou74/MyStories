@@ -48,7 +48,6 @@ public class AboutActivity extends Base {
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-        userProfile();
         if (button2 != null) {
             button2.setOnClickListener(v -> mail());
         }

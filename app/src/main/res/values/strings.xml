@@ -64,6 +64,7 @@
     <string name="push">You can do more than that!</string>
     <string name="numbers">000/450</string>
     <string name="put_image">Insert an image</string>
+    <string name="fields_required">*** All fields are required ***</string>
     <string name="email_user">Author email</string>
 
     <!-- Image content descriptions -->
@@ -111,6 +112,8 @@
     <string name="upload_done">Upload is %1$f \u0025 done</string>
     <string name="upload_completed">Upload completed</string>
     <string name="words_no">%1$d/%2$d</string>
+
+    <string name="no">000</string>
 
     <!-- DetailActivity -->
     <string name="load_post_cancel">loadPost:onCancelled</string>

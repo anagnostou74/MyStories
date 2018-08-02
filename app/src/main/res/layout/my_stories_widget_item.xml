@@ -17,9 +17,12 @@
         style="@style/SimpleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:layout_gravity="center_vertical"
+        android:textAlignment="center"
         android:text="@string/title"
-        android:textColor="@color/lightBrown" />
+        android:textColor="@color/lightBrown"
+        android:textSize="@dimen/small_text_size" />
 
 
 </LinearLayout>

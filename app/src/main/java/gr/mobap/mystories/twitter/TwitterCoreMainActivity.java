@@ -21,6 +21,10 @@ package gr.mobap.mystories.twitter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,11 +36,19 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import gr.mobap.mystories.Base;
 import gr.mobap.mystories.R;
 
 public class TwitterCoreMainActivity extends Base {
     private TwitterLoginButton loginButton;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
     /**
      * Constructs an intent for starting an instance of this activity.
@@ -51,7 +63,19 @@ public class TwitterCoreMainActivity extends Base {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.twittercore_activity_main);
+        setContentView(R.layout.activity_twitter_login);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(getString(R.string.app_name));
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+        userProfile();
 
         // Set up the login button by setting callback to invoke when authorization request
         // completes
