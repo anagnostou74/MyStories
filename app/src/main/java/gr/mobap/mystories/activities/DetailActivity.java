@@ -10,14 +10,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
@@ -69,6 +74,8 @@ public class DetailActivity extends Base {
     TextView info_email_tv;
     @BindView(R.id.user_photo)
     ImageView user_photo_iv;
+    @BindView(R.id.star_detail)
+    ImageView starDetail;
 
     DatabaseReference myRef;
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -76,6 +83,7 @@ public class DetailActivity extends Base {
     private ValueEventListener mPostListener;
     private String mPostKey;
     public static final String EXTRA_POST_KEY = "post_key";
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +137,26 @@ public class DetailActivity extends Base {
                 fab.setOnClickListener(view -> {
                     shareSocial(myStory.prologue, getString(R.string.share_msg, myStory.title, getString(R.string.app_name)), Uri.parse(myStory.image));
                 });
+
+                if (user != null) {
+                    if (myStory.fav.containsKey(getUid())) {
+                        starDetail.setImageResource(R.drawable.ic_favorite_full);
+                    } else {
+                        starDetail.setImageResource(R.drawable.ic_favorite_empty);
+                    }
+                } else {
+                    starDetail.setImageResource(R.drawable.ic_favorite_empty);
+                }
+
+                starDetail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseReference userPostRef = FirebaseDatabase.getInstance().getReference().child(getString(R.string.stories)).child(getString(R.string.user_posts)).child(user.getUid()).child(mPostKey);
+                        onStarClicked(myRef);
+                        onStarClicked(userPostRef);
+                    }
+                });
+
             }
 
             @Override
@@ -141,6 +169,56 @@ public class DetailActivity extends Base {
                 // [END_EXCLUDE]
             }
         };
+
+    }
+
+    // [START post_stars_transaction]
+    public void onStarClicked(DatabaseReference postRef) {
+        if (user != null) {
+            postRef.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    MyStory p = mutableData.getValue(MyStory.class);
+                    if (p == null) {
+                        return Transaction.success(mutableData);
+                    }
+                    if (p.fav.containsKey(getUid())) {
+                        // Unstar the post and remove self from stars
+                        p.favorited = p.favorited - 1;
+                        p.fav.remove(getUid());
+                    } else {
+                        // Star the post and add self to stars
+                        p.favorited = p.favorited + 1;
+                        p.fav.put(getUid(), true);
+                    }
+
+                    // Set value and report transaction success
+                    mutableData.setValue(p);
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean b,
+                                       DataSnapshot dataSnapshot) {
+                    // Transaction completed
+                    Log.d(TAG, getString(R.string.post_transaction) + databaseError);
+                }
+            });
+        } else {
+            Toast.makeText(DetailActivity.this, getString(R.string.login_vote), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    // [END post_stars_transaction]
+
+    public String getUid() {
+        if (user != null) {
+            return user.getUid();
+        } else {
+            Toast.makeText(DetailActivity.this, getString(R.string.user_id), Toast.LENGTH_SHORT).show();
+            return null;
+        }
 
     }
 

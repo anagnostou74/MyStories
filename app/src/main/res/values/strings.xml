@@ -115,7 +115,7 @@
     <!-- DetailActivity -->
     <string name="load_post_cancel">loadPost:onCancelled</string>
     <string name="load_post_fail">Failed to load post.</string>
-    <string name="share_msg">I am reading \' %1$s \' from %2$s</string>
+    <string name="share_msg">I am reading \' %1$s \' from \' %2$s \' android application</string>
 
 
 

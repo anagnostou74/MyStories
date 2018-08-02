@@ -73,6 +73,7 @@ public class StoriesActivity extends Base {
     int recyclerViewPosition;
     private static Bundle mBundleRecyclerViewState;
     private FirebaseAuth mAuth;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +85,9 @@ public class StoriesActivity extends Base {
         toolbar.setTitle(getString(R.string.app_name));
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
 
         fab.setOnClickListener(view -> {
-            if (mFirebaseUser != null) {
+            if (user != null) {
                 Intent i = new Intent(StoriesActivity.this, PostActivity.class);
                 startActivity(i);
             } else {
@@ -159,7 +159,6 @@ public class StoriesActivity extends Base {
             @Override
             protected void onBindViewHolder(StoriesViewHolder holder, int position, MyStory model) {
                 final String post_key = getRef(position).getKey();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 holder.setMainImageUrl(getApplicationContext(), model.getPhoto());
                 holder.setTitle(model.getTitle());
@@ -187,15 +186,8 @@ public class StoriesActivity extends Base {
                 });
 
                 // Bind Post to ViewHolder, setting OnClickListener for the star button
-                holder.bindToPost(model, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View starView) {
-                        DatabaseReference globalPostRef = myRef.child(post_key);
-                        DatabaseReference userPostRef = myRef.child(getString(R.string.user_posts)).child(user.getUid()).child(post_key);
-
-                        onStarClicked(globalPostRef);
-                        onStarClicked(userPostRef);
-                    }
+                holder.bindToPost(model, starView -> {
+                    setStar(post_key);
                 });
 
             }
@@ -215,9 +207,16 @@ public class StoriesActivity extends Base {
 
     }
 
+    public void setStar(String post_key) {
+        DatabaseReference globalPostRef = myRef.child(post_key);
+        DatabaseReference userPostRef = myRef.child(getString(R.string.user_posts)).child(user.getUid()).child(post_key);
+        onStarClicked(globalPostRef);
+        onStarClicked(userPostRef);
+    }
+
+
     // [START post_stars_transaction]
     public void onStarClicked(DatabaseReference postRef) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             postRef.runTransaction(new Transaction.Handler() {
                 @Override
@@ -256,14 +255,12 @@ public class StoriesActivity extends Base {
 
     // [END post_stars_transaction]
     public String getUid() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            return FirebaseAuth.getInstance().getCurrentUser().getUid();
+            return user.getUid();
         } else {
             Toast.makeText(StoriesActivity.this, getString(R.string.user_id), Toast.LENGTH_SHORT).show();
             return null;
         }
-
 
     }
 
