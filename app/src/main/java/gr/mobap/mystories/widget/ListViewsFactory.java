@@ -38,6 +38,7 @@ public class ListViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         myStoryArrayList.clear();
+        // Get data from StoriesActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String json = sharedPreferences.getString(StoriesActivity.WIDGET_MESSAGES_SHAREDPREF, "");
         if (!json.equals("")) {
@@ -59,7 +60,7 @@ public class ListViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int position) {
-
+        // loading data on the widget
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_stories_widget_item);
         views.setTextViewText(R.id.story_title, myStoryArrayList.get(position).getTitle());
         try {
