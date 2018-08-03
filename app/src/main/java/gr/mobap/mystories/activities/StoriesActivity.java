@@ -1,5 +1,6 @@
 package gr.mobap.mystories.activities;
 
+import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -86,6 +87,12 @@ public class StoriesActivity extends Base {
         fab.setOnClickListener(view -> {
             if (user != null) {
                 Intent i = new Intent(StoriesActivity.this, PostActivity.class);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                    startActivity(i, bundle);
+                } else {
+                    startActivity(i);
+                }
                 startActivity(i);
             } else {
                 Intent i = new Intent(StoriesActivity.this, LoginActivity.class);
