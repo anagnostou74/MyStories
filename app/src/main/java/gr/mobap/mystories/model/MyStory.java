@@ -11,43 +11,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyStory implements Serializable, Parcelable {
+public class MyStory implements Parcelable {
 
-    @SerializedName("date")
-    @Expose
     public String date;
-    @SerializedName("prologue")
-    @Expose
     public String prologue;
-    @SerializedName("body")
-    @Expose
     public String body;
-    @SerializedName("epilogue")
-    @Expose
     public String epilogue;
-    @SerializedName("photo")
-    @Expose
     public String photo;
-    @SerializedName("title")
-    @Expose
     public String title;
-    @SerializedName("type")
-    @Expose
     public String type;
-    @SerializedName("user")
-    @Expose
     public String user;
-    @SerializedName("image")
-    @Expose
     public String image;
-    @SerializedName("email")
-    @Expose
     public String email;
-    @SerializedName("video")
-    @Expose
-    public String video;
-    @SerializedName("favorited")
-    @Expose
     public Integer favorited = 0;
     public Map<String, Boolean> fav = new HashMap<>();
 
@@ -62,46 +37,11 @@ public class MyStory implements Serializable, Parcelable {
         this.user = ((String) in.readValue((String.class.getClassLoader())));
         this.image = ((String) in.readValue((String.class.getClassLoader())));
         this.email = ((String) in.readValue((String.class.getClassLoader())));
-        this.video = ((String) in.readValue((String.class.getClassLoader())));
         this.favorited = ((Integer) in.readValue((Integer.class.getClassLoader())));
-    }
-
-    /**
-     * No args constructor for use in serialization
-     *
-     * @param date
-     * @param prologue
-     * @param body
-     * @param epilogue
-     * @param photo
-     * @param title
-     * @param user
-     * @param email
-     * @param i
-     * @param image
-     * @param type
-     */
-    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String user, String email, int i, String image, String type) {
     }
 
     public MyStory() {
     }
-
-    public MyStory(String date, String prologue, String body, String epilogue, String photo, String title, String type, String user, String image, String email, String video, Integer favorited) {
-        this.date = date;
-        this.prologue = prologue;
-        this.body = body;
-        this.epilogue = epilogue;
-        this.photo = photo;
-        this.title = title;
-        this.type = type;
-        this.user = user;
-        this.image = image;
-        this.email = email;
-        this.video = video;
-        this.favorited = favorited;
-    }
-
 
     public static final Creator<MyStory> CREATOR = new Creator<MyStory>() {
         @Override
@@ -195,14 +135,6 @@ public class MyStory implements Serializable, Parcelable {
         this.email = email;
     }
 
-    public String getVideo() {
-        return video;
-    }
-
-    public void setVideo(String video) {
-        this.video = video;
-    }
-
     public Integer getFavorited() {
         return favorited;
     }
@@ -222,7 +154,6 @@ public class MyStory implements Serializable, Parcelable {
         dest.writeString(user);
         dest.writeString(image);
         dest.writeString(email);
-        dest.writeString(video);
         dest.writeInt(favorited);
     }
 
@@ -243,7 +174,6 @@ public class MyStory implements Serializable, Parcelable {
         result.put("user", user);
         result.put("image", image);
         result.put("email", email);
-        result.put("video", video);
         result.put("favorited", favorited);
         result.put("fav", fav);
 
