@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,6 +39,9 @@ import gr.mobap.mystories.utilities.AndroidNetworkUtility;
 /**
  * TimelineActivity shows a timeline from a list with funny and interesting tweets.
  */
+
+// After reviewers comments implementation to keep the scroll position on screen change
+// https://futurestud.io/tutorials/how-to-save-and-restore-the-scroll-position-and-state-of-a-android-listview
 public class TimelineActivity extends Base {
 
     private final WeakReference<Activity> activityRef = new WeakReference<>(TimelineActivity.this);
@@ -151,7 +155,13 @@ public class TimelineActivity extends Base {
         @Override
         protected void onPostExecute(TweetTimelineListAdapter adapter) {
             super.onPostExecute(adapter);
+            // Save the ListView state (= includes scroll position) as a Parceble
+            Parcelable state = listView.onSaveInstanceState();
+
             listView.setAdapter(adapter);
+            // Restore previous state (including selected item index and scroll position)
+            listView.onRestoreInstanceState(state);
+
             swipeLayout.setColorSchemeResources(R.color.twitter_blue, R.color.twitter_dark);
 
             // specify action to take on swipe refresh
